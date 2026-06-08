@@ -51,8 +51,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         <Sidebar collapsible="icon">
           <SidebarHeader>
             <Link to="/dashboard" className="flex items-center gap-2 px-2 py-3">
-              <div className="grid h-8 w-8 place-items-center rounded-lg gradient-bg font-bold text-sm">LB</div>
-              <span className="text-sm font-semibold group-data-[collapsible=icon]:hidden">LB <span className="gradient-text">Group</span></span>
+              <div className="grid h-8 w-8 place-items-center rounded-lg gold-bg font-bold text-sm text-[oklch(0.15_0.03_250)]">LB</div>
+              <span className="text-sm font-semibold group-data-[collapsible=icon]:hidden">LB <span className="gold-text">Group</span></span>
             </Link>
           </SidebarHeader>
           <SidebarContent>

@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/analytics")({
   component: AnalyticsPage,
 });
 
-const COLORS = ["oklch(0.68 0.27 350)", "oklch(0.6 0.2 280)", "oklch(0.7 0.15 200)", "oklch(0.65 0.2 140)"];
+const COLORS = ["oklch(0.35 0.12 250)", "oklch(0.75 0.16 85)", "oklch(0.7 0.15 200)", "oklch(0.65 0.2 140)"];
 
 function AnalyticsPage() {
   const { data: rooms = [] } = useQuery({
@@ -120,11 +120,11 @@ function AnalyticsPage() {
           <CardContent>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={monthlyRevenue}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
-                <XAxis dataKey="d" stroke="oklch(0.7 0.03 300)" />
-                <YAxis stroke="oklch(0.7 0.03 300)" />
-                <Tooltip contentStyle={{ background: "oklch(0.17 0.025 290)", border: "1px solid oklch(1 0 0 / 0.1)", borderRadius: 12 }} />
-                <Bar dataKey="v" fill="oklch(0.68 0.27 350)" radius={[6, 6, 0, 0]} />
+                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.9 0.01 250)" />
+                <XAxis dataKey="d" stroke="oklch(0.5 0.02 250)" />
+                <YAxis stroke="oklch(0.5 0.02 250)" />
+                <Tooltip contentStyle={{ background: "oklch(0.99 0.005 250)", border: "1px solid oklch(0.9 0.01 250)", borderRadius: 12 }} />
+                <Bar dataKey="v" fill="oklch(0.35 0.12 250)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -139,7 +139,7 @@ function AnalyticsPage() {
                   <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label>
                     {statusData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
-                  <Tooltip contentStyle={{ background: "oklch(0.17 0.025 290)", border: "1px solid oklch(1 0 0 / 0.1)", borderRadius: 12 }} />
+                  <Tooltip contentStyle={{ background: "oklch(0.99 0.005 250)", border: "1px solid oklch(0.9 0.01 250)", borderRadius: 12 }} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -155,12 +155,12 @@ function AnalyticsPage() {
         <CardContent>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={categoryData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
-              <XAxis dataKey="name" stroke="oklch(0.7 0.03 300)" />
-              <YAxis stroke="oklch(0.7 0.03 300)" />
-              <Tooltip contentStyle={{ background: "oklch(0.17 0.025 290)", border: "1px solid oklch(1 0 0 / 0.1)", borderRadius: 12 }} />
-              <Bar dataKey="revenue" fill="oklch(0.6 0.2 280)" radius={[6, 6, 0, 0]} name="Revenus (€)" />
-              <Bar dataKey="rooms" fill="oklch(0.68 0.27 350)" radius={[6, 6, 0, 0]} name="Chambres" />
+              <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.9 0.01 250)" />
+              <XAxis dataKey="name" stroke="oklch(0.5 0.02 250)" />
+              <YAxis stroke="oklch(0.5 0.02 250)" />
+              <Tooltip contentStyle={{ background: "oklch(0.99 0.005 250)", border: "1px solid oklch(0.9 0.01 250)", borderRadius: 12 }} />
+              <Bar dataKey="revenue" fill="oklch(0.75 0.16 85)" radius={[6, 6, 0, 0]} name="Revenus (€)" />
+              <Bar dataKey="rooms" fill="oklch(0.35 0.12 250)" radius={[6, 6, 0, 0]} name="Chambres" />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

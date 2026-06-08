@@ -73,11 +73,11 @@ function Dashboard() {
           <CardContent>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="oklch(1 0 0 / 0.06)" />
-                <XAxis dataKey="d" stroke="oklch(0.7 0.03 300)" />
-                <YAxis stroke="oklch(0.7 0.03 300)" />
-                <Tooltip contentStyle={{ background: "oklch(0.17 0.025 290)", border: "1px solid oklch(1 0 0 / 0.1)", borderRadius: 12 }} />
-                <Line type="monotone" dataKey="v" stroke="oklch(0.68 0.27 350)" strokeWidth={3} dot={{ fill: "oklch(0.68 0.27 350)" }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.9 0.01 250)" />
+                <XAxis dataKey="d" stroke="oklch(0.5 0.02 250)" />
+                <YAxis stroke="oklch(0.5 0.02 250)" />
+                <Tooltip contentStyle={{ background: "oklch(0.99 0.005 250)", border: "1px solid oklch(0.9 0.01 250)", borderRadius: 12 }} />
+                <Line type="monotone" dataKey="v" stroke="oklch(0.35 0.12 250)" strokeWidth={3} dot={{ fill: "oklch(0.35 0.12 250)" }} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
