@@ -30,6 +30,10 @@ function ContactPage() {
       toast.error("Erreur lors de l'envoi. Réessayez.");
       return;
     }
+    // Notification email instantanée
+    supabase.functions.invoke("notify-contact", {
+      body: { name: form.name, email: form.email, subject: form.subject, message: form.message },
+    }).catch(() => {});
     setSent(true);
     toast.success("Message envoyé ! Nous vous répondrons sous 24h.");
   }

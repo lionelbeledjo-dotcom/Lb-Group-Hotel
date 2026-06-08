@@ -68,6 +68,17 @@ function Landing() {
       toast.error("Erreur lors de l'envoi. Réessayez.");
       return;
     }
+    // Notification email instantanée à l'admin
+    supabase.functions.invoke("notify-demo", {
+      body: {
+        name: demoForm.name,
+        email: demoForm.email,
+        phone: demoForm.phone,
+        company: demoForm.company,
+        rooms: demoForm.rooms,
+        message: demoForm.message,
+      },
+    }).catch(() => {});
     setDemoSent(true);
     toast.success("Demande envoyée ! Notre équipe vous contactera sous 24h.");
   }
