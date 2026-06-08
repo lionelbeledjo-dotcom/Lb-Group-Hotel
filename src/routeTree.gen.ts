@@ -9,8 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TarifsRouteImport } from './routes/tarifs'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ConfidentialiteRouteImport } from './routes/confidentialite'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminLoginRouteImport } from './routes/admin-login'
+import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
@@ -25,6 +31,31 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedCommunicationRouteImport } from './routes/_authenticated/communication'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 
+const TarifsRoute = TarifsRouteImport.update({
+  id: '/tarifs',
+  path: '/tarifs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfidentialiteRoute = ConfidentialiteRouteImport.update({
+  id: '/confidentialite',
+  path: '/confidentialite',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -33,6 +64,11 @@ const AuthRoute = AuthRouteImport.update({
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin-login',
   path: '/admin-login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -106,8 +142,14 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/admin-login': typeof AdminLoginRoute
   '/auth': typeof AuthRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/tarifs': typeof TarifsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/communication': typeof AuthenticatedCommunicationRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -122,8 +164,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
   '/admin-login': typeof AdminLoginRoute
   '/auth': typeof AuthRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/tarifs': typeof TarifsRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
   '/communication': typeof AuthenticatedCommunicationRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -140,8 +188,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/a-propos': typeof AProposRoute
   '/admin-login': typeof AdminLoginRoute
   '/auth': typeof AuthRoute
+  '/confidentialite': typeof ConfidentialiteRoute
+  '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
+  '/mentions-legales': typeof MentionsLegalesRoute
+  '/tarifs': typeof TarifsRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
   '/_authenticated/communication': typeof AuthenticatedCommunicationRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -158,8 +212,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/a-propos'
     | '/admin-login'
     | '/auth'
+    | '/confidentialite'
+    | '/contact'
+    | '/login'
+    | '/mentions-legales'
+    | '/tarifs'
     | '/analytics'
     | '/communication'
     | '/dashboard'
@@ -174,8 +234,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/a-propos'
     | '/admin-login'
     | '/auth'
+    | '/confidentialite'
+    | '/contact'
+    | '/login'
+    | '/mentions-legales'
+    | '/tarifs'
     | '/analytics'
     | '/communication'
     | '/dashboard'
@@ -191,8 +257,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/a-propos'
     | '/admin-login'
     | '/auth'
+    | '/confidentialite'
+    | '/contact'
+    | '/login'
+    | '/mentions-legales'
+    | '/tarifs'
     | '/_authenticated/analytics'
     | '/_authenticated/communication'
     | '/_authenticated/dashboard'
@@ -209,12 +281,53 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AProposRoute: typeof AProposRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AuthRoute: typeof AuthRoute
+  ConfidentialiteRoute: typeof ConfidentialiteRoute
+  ContactRoute: typeof ContactRoute
+  LoginRoute: typeof LoginRoute
+  MentionsLegalesRoute: typeof MentionsLegalesRoute
+  TarifsRoute: typeof TarifsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tarifs': {
+      id: '/tarifs'
+      path: '/tarifs'
+      fullPath: '/tarifs'
+      preLoaderRoute: typeof TarifsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/confidentialite': {
+      id: '/confidentialite'
+      path: '/confidentialite'
+      fullPath: '/confidentialite'
+      preLoaderRoute: typeof ConfidentialiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -227,6 +340,13 @@ declare module '@tanstack/react-router' {
       path: '/admin-login'
       fullPath: '/admin-login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -357,8 +477,14 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AProposRoute: AProposRoute,
   AdminLoginRoute: AdminLoginRoute,
   AuthRoute: AuthRoute,
+  ConfidentialiteRoute: ConfidentialiteRoute,
+  ContactRoute: ContactRoute,
+  LoginRoute: LoginRoute,
+  MentionsLegalesRoute: MentionsLegalesRoute,
+  TarifsRoute: TarifsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -75,7 +75,7 @@ function Landing() {
             <a href="#demo" className="hover:text-[oklch(0.2_0.06_250)] transition-colors">Démo</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link to="/admin-login"><Button variant="outline" className="hidden sm:flex">Espace Admin</Button></Link>
+            <Link to="/login"><Button variant="outline" className="hidden sm:flex">Se connecter</Button></Link>
             <a href="#demo"><Button className="gold-bg text-[oklch(0.15_0.03_250)] font-semibold gold-glow">Demander une démo</Button></a>
           </div>
         </div>
@@ -234,8 +234,8 @@ function Landing() {
                 ))}
               </div>
               <div className="mt-10 flex items-center gap-6 text-white/70 text-sm">
-                <div className="flex items-center gap-2"><Phone className="h-4 w-4" /> +237 6XX XXX XXX</div>
-                <div className="flex items-center gap-2"><Mail className="h-4 w-4" /> contact@lbgroup.cm</div>
+                <div className="flex items-center gap-2"><Phone className="h-4 w-4" /> +33 6 60 06 17 23</div>
+                <div className="flex items-center gap-2"><Mail className="h-4 w-4" /> lbcloudadmin@gmail.com</div>
               </div>
             </div>
 
@@ -295,7 +295,7 @@ function Landing() {
         <p className="text-muted-foreground max-w-md mx-auto mb-8">Rejoignez les centaines d'établissements qui font confiance à LB Group.</p>
         <div className="flex justify-center gap-4">
           <a href="#demo"><Button size="lg" className="gradient-bg text-white font-semibold glow">Commencer maintenant</Button></a>
-          <Link to="/admin-login"><Button size="lg" variant="outline">Accès administration</Button></Link>
+          <Link to="/login"><Button size="lg" variant="outline">Se connecter</Button></Link>
         </div>
       </section>
 
@@ -313,25 +313,27 @@ function Landing() {
             <div>
               <h4 className="font-semibold mb-3 text-sm">Produit</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#modules" className="hover:text-foreground">Modules</a></li>
-                <li><a href="#avantages" className="hover:text-foreground">Avantages</a></li>
-                <li><a href="#demo" className="hover:text-foreground">Démo</a></li>
+                <li><a href="#modules" className="hover:text-foreground transition-colors">Modules</a></li>
+                <li><a href="#avantages" className="hover:text-foreground transition-colors">Avantages</a></li>
+                <li><a href="#demo" className="hover:text-foreground transition-colors">Demander une démo</a></li>
+                <li><Link to="/tarifs" className="hover:text-foreground transition-colors">Tarifs</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-3 text-sm">Entreprise</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>À propos</li>
-                <li>Carrières</li>
-                <li>Contact</li>
+                <li><Link to="/a-propos" className="hover:text-foreground transition-colors">À propos</Link></li>
+                <li><Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
+                <li><Link to="/mentions-legales" className="hover:text-foreground transition-colors">Mentions légales</Link></li>
+                <li><Link to="/confidentialite" className="hover:text-foreground transition-colors">Confidentialité</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-3 text-sm">Contact</h4>
+              <h4 className="font-semibold mb-3 text-sm">Nous contacter</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" /> +237 6XX XXX XXX</li>
-                <li className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" /> contact@lbgroup.cm</li>
-                <li className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> Douala, Cameroun</li>
+                <li className="flex items-center gap-2"><Phone className="h-3.5 w-3.5" /> <a href="tel:+33660061723" className="hover:text-foreground transition-colors">+33 6 60 06 17 23</a></li>
+                <li className="flex items-center gap-2"><Mail className="h-3.5 w-3.5" /> <a href="mailto:lbcloudadmin@gmail.com" className="hover:text-foreground transition-colors">lbcloudadmin@gmail.com</a></li>
+                <li className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5" /> France / Cameroun</li>
               </ul>
             </div>
           </div>

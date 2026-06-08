@@ -85,6 +85,16 @@ function AdminLoginPage() {
                 <Label>Mot de passe</Label>
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" className="h-11" />
               </div>
+              <div className="text-right">
+                <button type="button" onClick={async () => {
+                  if (!email) return toast.error("Entrez votre email d'abord");
+                  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/dashboard" });
+                  if (error) return toast.error(error.message);
+                  toast.success("Email de réinitialisation envoyé !");
+                }} className="text-xs text-[oklch(0.35_0.12_250)] hover:underline">
+                  Mot de passe oublié ?
+                </button>
+              </div>
               <Button type="submit" className="w-full h-11 gradient-bg text-white font-semibold glow" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Se connecter
