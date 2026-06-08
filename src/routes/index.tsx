@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import {
   BedDouble, Brush, Wrench, Headset, BarChart3, MessageSquare, Receipt, ShieldCheck,
   ArrowRight, CheckCircle2, Star, Phone, Mail, MapPin, Globe, Users, Clock, Shield,
@@ -53,8 +54,20 @@ function Landing() {
   });
   const [demoSent, setDemoSent] = useState(false);
 
-  function handleDemo(e: React.FormEvent) {
+  async function handleDemo(e: React.FormEvent) {
     e.preventDefault();
+    const { error } = await supabase.from("demo_requests" as any).insert({
+      name: demoForm.name,
+      email: demoForm.email,
+      phone: demoForm.phone,
+      company: demoForm.company,
+      rooms: demoForm.rooms || null,
+      message: demoForm.message || null,
+    });
+    if (error) {
+      toast.error("Erreur lors de l'envoi. Réessayez.");
+      return;
+    }
     setDemoSent(true);
     toast.success("Demande envoyée ! Notre équipe vous contactera sous 24h.");
   }

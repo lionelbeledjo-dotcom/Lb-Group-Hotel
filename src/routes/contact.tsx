@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Phone, Mail, MapPin, Send } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
@@ -17,8 +18,18 @@ function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    const { error } = await supabase.from("contact_messages" as any).insert({
+      name: form.name,
+      email: form.email,
+      subject: form.subject,
+      message: form.message,
+    });
+    if (error) {
+      toast.error("Erreur lors de l'envoi. Réessayez.");
+      return;
+    }
     setSent(true);
     toast.success("Message envoyé ! Nous vous répondrons sous 24h.");
   }

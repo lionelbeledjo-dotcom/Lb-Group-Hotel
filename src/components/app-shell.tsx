@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sidebar";
 import {
   LayoutDashboard, CalendarDays, BedDouble, Brush, Wrench, MessageSquare,
-  Headset, Users, Receipt, BarChart3, Settings, LogOut, Bell, Search,
+  Headset, Users, Receipt, BarChart3, Settings, LogOut, Bell, Search, Inbox, CreditCard,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,9 @@ const groups: { label: string; items: { to: string; label: string; icon: any }[]
   { label: "Management", items: [
     { to: "/finance", label: "Finance", icon: Receipt },
     { to: "/analytics", label: "Analytics", icon: BarChart3 },
+    { to: "/subscriptions", label: "Abonnements", icon: CreditCard },
     { to: "/communication", label: "Communication", icon: Users },
+    { to: "/inbox", label: "Boîte de réception", icon: Inbox },
     { to: "/settings", label: "Paramètres", icon: Settings },
   ]},
 ];
