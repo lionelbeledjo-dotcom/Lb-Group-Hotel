@@ -6,9 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Receipt, TrendingUp, CreditCard, Banknote } from "lucide-react";
+import { Receipt, TrendingUp, CreditCard, Banknote, FileDown } from "lucide-react";
 import { toast } from "sonner";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import { exportInvoicePDF } from "@/lib/export-pdf";
 
 export const Route = createFileRoute("/_authenticated/finance")({
   head: () => ({ meta: [{ title: "Finance — LB Group" }] }),
@@ -154,7 +155,7 @@ function FinancePage() {
                   <TableCell className="font-semibold">€ {Number(inv.amount).toLocaleString()}</TableCell>
                   <TableCell>{inv.method ? METHOD_LABELS[inv.method] || inv.method : "—"}</TableCell>
                   <TableCell><Badge variant="outline" className={STATUS_COLORS[inv.status]}>{STATUS_LABELS[inv.status]}</Badge></TableCell>
-                  <TableCell>
+                  <TableCell className="flex items-center gap-1">
                     {inv.status === "pending" && (
                       <Select onValueChange={(method) => updateStatus.mutate({ id: inv.id, status: "paid", method })}>
                         <SelectTrigger className="h-8 w-32 text-xs"><SelectValue placeholder="Encaisser" /></SelectTrigger>
@@ -165,6 +166,25 @@ function FinancePage() {
                         </SelectContent>
                       </Select>
                     )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      title="Exporter PDF"
+                      onClick={() => exportInvoicePDF({
+                        id: inv.id,
+                        guest_name: inv.reservations?.guest_name || "Client",
+                        check_in: inv.reservations?.check_in || "",
+                        check_out: inv.reservations?.check_out || "",
+                        amount: inv.amount,
+                        method: inv.method,
+                        status: inv.status,
+                        paid_at: inv.paid_at,
+                        created_at: inv.created_at,
+                      })}
+                    >
+                      <FileDown className="h-4 w-4" />
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

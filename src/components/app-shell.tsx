@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
+import { NotificationsPanel } from "@/components/notifications-panel";
 
 type NavItem = { to: string; label: string; icon: any; roles?: string[] };
 type NavGroup = { label: string; items: NavItem[] };
@@ -121,7 +122,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Input placeholder="Rechercher (réservations, chambres, invités...)" className="pl-9" />
             </div>
             <div className="ml-auto flex items-center gap-2">
-              <Button variant="ghost" size="icon"><Bell className="h-4 w-4" /></Button>
+              <NotificationsPanel />
               <div className="h-8 w-8 rounded-full gradient-bg" />
             </div>
           </header>
