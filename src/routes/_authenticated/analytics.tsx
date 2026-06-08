@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, BedDouble, TrendingUp, Clock, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { BarChart3, BedDouble, TrendingUp, Clock, Users, FileDown } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 
 export const Route = createFileRoute("/_authenticated/analytics")({
@@ -80,11 +81,64 @@ function AnalyticsPage() {
     return { d: label, v: amount };
   });
 
+  function exportReport() {
+    const today = new Date().toLocaleDateString("fr-FR");
+    const html = `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><title>Rapport Analytics — LB Group</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;padding:40px;color:#1a2744}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:30px;border-bottom:3px solid #1a2744;padding-bottom:16px}
+.logo{font-size:24px;font-weight:700}.logo span{color:#c8a45c}
+.date{font-size:12px;color:#666}
+h2{font-size:16px;margin:24px 0 12px;border-bottom:1px solid #eee;padding-bottom:8px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat{border:1px solid #e5e7eb;border-radius:8px;padding:16px;text-align:center}
+.stat .value{font-size:24px;font-weight:700;color:#1a2744}
+.stat .label{font-size:11px;color:#666;margin-top:4px}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th{background:#1a2744;color:#fff;padding:8px 12px;text-align:left;font-size:11px;text-transform:uppercase}
+td{padding:8px 12px;border-bottom:1px solid #eee;font-size:13px}
+.footer{margin-top:40px;text-align:center;font-size:10px;color:#999;border-top:1px solid #eee;padding-top:16px}
+@media print{body{padding:20px}}
+</style></head><body>
+<div class="header"><div><div class="logo">LB <span>Group</span></div><div class="date">Rapport généré le ${today}</div></div></div>
+<h2>Indicateurs clés</h2>
+<div class="grid">
+<div class="stat"><div class="value">${occupancyRate}%</div><div class="label">Taux d'occupation</div></div>
+<div class="stat"><div class="value">${totalRevenue.toLocaleString("fr-FR")} FCFA</div><div class="label">Revenus totaux</div></div>
+<div class="stat"><div class="value">${totalReservations}</div><div class="label">Réservations</div></div>
+<div class="stat"><div class="value">${avgStay} jours</div><div class="label">Durée moy. séjour</div></div>
+</div>
+<h2>Revenus mensuels</h2>
+<table><thead><tr><th>Mois</th><th>Revenus</th></tr></thead><tbody>
+${monthlyRevenue.map((m) => `<tr><td>${m.d}</td><td>${m.v.toLocaleString("fr-FR")} FCFA</td></tr>`).join("")}
+</tbody></table>
+<h2>Répartition par catégorie</h2>
+<table><thead><tr><th>Catégorie</th><th>Chambres</th><th>Revenus</th></tr></thead><tbody>
+${categoryData.map((c) => `<tr><td>${c.name}</td><td>${c.rooms}</td><td>${c.revenue.toLocaleString("fr-FR")} FCFA</td></tr>`).join("")}
+</tbody></table>
+<h2>Statut des chambres</h2>
+<table><thead><tr><th>Statut</th><th>Nombre</th></tr></thead><tbody>
+${statusData.map((s) => `<tr><td>${s.name}</td><td>${s.value}</td></tr>`).join("")}
+</tbody></table>
+<div class="footer"><p>LB Group — Gestion Hôtelière Professionnelle</p><p>+33 6 60 06 17 23 — lbcloudadmin@gmail.com</p></div>
+</body></html>`;
+    const w = window.open("", "_blank", "width=800,height=600");
+    if (!w) return;
+    w.document.write(html);
+    w.document.close();
+    w.onload = () => w.print();
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>Analytics</h1>
-        <p className="text-sm text-muted-foreground">Indicateurs clés de performance</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>Analytics</h1>
+          <p className="text-sm text-muted-foreground">Indicateurs clés de performance</p>
+        </div>
+        <Button variant="outline" onClick={exportReport}><FileDown className="mr-2 h-4 w-4" /> Exporter PDF</Button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

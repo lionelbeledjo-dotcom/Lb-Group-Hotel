@@ -98,13 +98,24 @@ function SettingsPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Non connecté");
       if (!settings?.id) throw new Error("Configurez d'abord votre établissement");
-      const { error } = await supabase.from("staff_invitations" as any).insert({
+      const { data: inserted, error } = await supabase.from("staff_invitations" as any).insert({
         establishment_id: settings.id,
         email: inviteEmail.trim().toLowerCase(),
         role: inviteRole,
         invited_by: user.id,
-      });
+      }).select().single();
       if (error) throw error;
+      // Envoyer l'email via Edge Function (non-bloquant)
+      const inv = inserted as any;
+      supabase.functions.invoke("send-invite", {
+        body: {
+          email: inv.email,
+          role: inv.role,
+          token: inv.token,
+          establishment_name: settings.name || "LB Group",
+          invited_by_name: user.user_metadata?.full_name || user.email,
+        },
+      }).catch(() => {});
     },
     onSuccess: () => {
       setInviteEmail("");
