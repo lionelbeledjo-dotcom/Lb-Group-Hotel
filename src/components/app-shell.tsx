@@ -1,5 +1,5 @@
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { Link, useNavigate, useRouterState, useRouteContext } from "@tanstack/react-router";
+import { type ReactNode, useMemo } from "react";
 import {
   SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger,
@@ -14,27 +14,30 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 
-const groups: { label: string; items: { to: string; label: string; icon: any }[] }[] = [
+type NavItem = { to: string; label: string; icon: any; roles?: string[] };
+type NavGroup = { label: string; items: NavItem[] };
+
+const allGroups: NavGroup[] = [
   { label: "Vue d'ensemble", items: [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   ]},
   { label: "Opérations", items: [
-    { to: "/reservations", label: "Réservations", icon: CalendarDays },
-    { to: "/rooms", label: "Chambres", icon: BedDouble },
-    { to: "/housekeeping", label: "Housekeeping", icon: Brush },
-    { to: "/maintenance", label: "Maintenance", icon: Wrench },
-    { to: "/requests", label: "Conciergerie", icon: MessageSquare },
+    { to: "/reservations", label: "Réservations", icon: CalendarDays, roles: ["super_admin", "admin", "receptionist"] },
+    { to: "/rooms", label: "Chambres", icon: BedDouble, roles: ["super_admin", "admin", "receptionist"] },
+    { to: "/housekeeping", label: "Housekeeping", icon: Brush, roles: ["super_admin", "admin", "housekeeper"] },
+    { to: "/maintenance", label: "Maintenance", icon: Wrench, roles: ["super_admin", "admin", "maintenance"] },
+    { to: "/requests", label: "Conciergerie", icon: MessageSquare, roles: ["super_admin", "admin", "receptionist"] },
   ]},
   { label: "Réception", items: [
-    { to: "/reception", label: "Check-in / out", icon: Headset },
+    { to: "/reception", label: "Check-in / out", icon: Headset, roles: ["super_admin", "admin", "receptionist"] },
   ]},
   { label: "Management", items: [
-    { to: "/finance", label: "Finance", icon: Receipt },
-    { to: "/analytics", label: "Analytics", icon: BarChart3 },
-    { to: "/subscriptions", label: "Abonnements", icon: CreditCard },
+    { to: "/finance", label: "Finance", icon: Receipt, roles: ["super_admin", "admin"] },
+    { to: "/analytics", label: "Analytics", icon: BarChart3, roles: ["super_admin", "admin"] },
+    { to: "/subscriptions", label: "Abonnements", icon: CreditCard, roles: ["super_admin"] },
     { to: "/communication", label: "Communication", icon: Users },
-    { to: "/inbox", label: "Boîte de réception", icon: Inbox },
-    { to: "/settings", label: "Paramètres", icon: Settings },
+    { to: "/inbox", label: "Boîte de réception", icon: Inbox, roles: ["super_admin", "admin"] },
+    { to: "/settings", label: "Paramètres", icon: Settings, roles: ["super_admin", "admin"] },
   ]},
 ];
 
@@ -42,9 +45,30 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  let userRoles: string[] = [];
+  try {
+    const ctx = useRouteContext({ from: "/_authenticated" });
+    userRoles = (ctx as any).roles ?? [];
+  } catch {
+    // context not available yet
+  }
+
+  const filteredGroups = useMemo(() => {
+    if (userRoles.length === 0) return allGroups;
+    return allGroups
+      .map((g) => ({
+        ...g,
+        items: g.items.filter((item) => {
+          if (!item.roles) return true;
+          return item.roles.some((r) => userRoles.includes(r));
+        }),
+      }))
+      .filter((g) => g.items.length > 0);
+  }, [userRoles]);
+
   async function handleSignOut() {
     await signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate({ to: "/login", replace: true });
   }
 
   return (
@@ -58,7 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Link>
           </SidebarHeader>
           <SidebarContent>
-            {groups.map((g) => (
+            {filteredGroups.map((g) => (
               <SidebarGroup key={g.label}>
                 <SidebarGroupLabel>{g.label}</SidebarGroupLabel>
                 <SidebarGroupContent>
