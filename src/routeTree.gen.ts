@@ -26,13 +26,20 @@ import { Route as AuthenticatedRoomsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedReservationsRouteImport } from './routes/_authenticated/reservations'
 import { Route as AuthenticatedRequestsRouteImport } from './routes/_authenticated/requests'
 import { Route as AuthenticatedReceptionRouteImport } from './routes/_authenticated/reception'
+import { Route as AuthenticatedQualityRouteImport } from './routes/_authenticated/quality'
 import { Route as AuthenticatedMaintenanceRouteImport } from './routes/_authenticated/maintenance'
+import { Route as AuthenticatedLostFoundRouteImport } from './routes/_authenticated/lost-found'
+import { Route as AuthenticatedLentItemsRouteImport } from './routes/_authenticated/lent-items'
 import { Route as AuthenticatedInboxRouteImport } from './routes/_authenticated/inbox'
 import { Route as AuthenticatedHousekeepingRouteImport } from './routes/_authenticated/housekeeping'
 import { Route as AuthenticatedFinanceRouteImport } from './routes/_authenticated/finance'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedContractsRouteImport } from './routes/_authenticated/contracts'
+import { Route as AuthenticatedConsignesRouteImport } from './routes/_authenticated/consignes'
 import { Route as AuthenticatedCommunicationRouteImport } from './routes/_authenticated/communication'
+import { Route as AuthenticatedCashRegisterRouteImport } from './routes/_authenticated/cash-register'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as AuthenticatedAgendaRouteImport } from './routes/_authenticated/agenda'
 
 const TarifsRoute = TarifsRouteImport.update({
   id: '/tarifs',
@@ -120,12 +127,27 @@ const AuthenticatedReceptionRoute = AuthenticatedReceptionRouteImport.update({
   path: '/reception',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedQualityRoute = AuthenticatedQualityRouteImport.update({
+  id: '/quality',
+  path: '/quality',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedMaintenanceRoute =
   AuthenticatedMaintenanceRouteImport.update({
     id: '/maintenance',
     path: '/maintenance',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedLostFoundRoute = AuthenticatedLostFoundRouteImport.update({
+  id: '/lost-found',
+  path: '/lost-found',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedLentItemsRoute = AuthenticatedLentItemsRouteImport.update({
+  id: '/lent-items',
+  path: '/lent-items',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedInboxRoute = AuthenticatedInboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
@@ -147,15 +169,36 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedContractsRoute = AuthenticatedContractsRouteImport.update({
+  id: '/contracts',
+  path: '/contracts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedConsignesRoute = AuthenticatedConsignesRouteImport.update({
+  id: '/consignes',
+  path: '/consignes',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedCommunicationRoute =
   AuthenticatedCommunicationRouteImport.update({
     id: '/communication',
     path: '/communication',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedCashRegisterRoute =
+  AuthenticatedCashRegisterRouteImport.update({
+    id: '/cash-register',
+    path: '/cash-register',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   id: '/analytics',
   path: '/analytics',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAgendaRoute = AuthenticatedAgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
@@ -170,13 +213,20 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/tarifs': typeof TarifsRoute
+  '/agenda': typeof AuthenticatedAgendaRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
+  '/cash-register': typeof AuthenticatedCashRegisterRoute
   '/communication': typeof AuthenticatedCommunicationRoute
+  '/consignes': typeof AuthenticatedConsignesRoute
+  '/contracts': typeof AuthenticatedContractsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/housekeeping': typeof AuthenticatedHousekeepingRoute
   '/inbox': typeof AuthenticatedInboxRoute
+  '/lent-items': typeof AuthenticatedLentItemsRoute
+  '/lost-found': typeof AuthenticatedLostFoundRoute
   '/maintenance': typeof AuthenticatedMaintenanceRoute
+  '/quality': typeof AuthenticatedQualityRoute
   '/reception': typeof AuthenticatedReceptionRoute
   '/requests': typeof AuthenticatedRequestsRoute
   '/reservations': typeof AuthenticatedReservationsRoute
@@ -195,13 +245,20 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/tarifs': typeof TarifsRoute
+  '/agenda': typeof AuthenticatedAgendaRoute
   '/analytics': typeof AuthenticatedAnalyticsRoute
+  '/cash-register': typeof AuthenticatedCashRegisterRoute
   '/communication': typeof AuthenticatedCommunicationRoute
+  '/consignes': typeof AuthenticatedConsignesRoute
+  '/contracts': typeof AuthenticatedContractsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/finance': typeof AuthenticatedFinanceRoute
   '/housekeeping': typeof AuthenticatedHousekeepingRoute
   '/inbox': typeof AuthenticatedInboxRoute
+  '/lent-items': typeof AuthenticatedLentItemsRoute
+  '/lost-found': typeof AuthenticatedLostFoundRoute
   '/maintenance': typeof AuthenticatedMaintenanceRoute
+  '/quality': typeof AuthenticatedQualityRoute
   '/reception': typeof AuthenticatedReceptionRoute
   '/requests': typeof AuthenticatedRequestsRoute
   '/reservations': typeof AuthenticatedReservationsRoute
@@ -222,13 +279,20 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
   '/tarifs': typeof TarifsRoute
+  '/_authenticated/agenda': typeof AuthenticatedAgendaRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRoute
+  '/_authenticated/cash-register': typeof AuthenticatedCashRegisterRoute
   '/_authenticated/communication': typeof AuthenticatedCommunicationRoute
+  '/_authenticated/consignes': typeof AuthenticatedConsignesRoute
+  '/_authenticated/contracts': typeof AuthenticatedContractsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/finance': typeof AuthenticatedFinanceRoute
   '/_authenticated/housekeeping': typeof AuthenticatedHousekeepingRoute
   '/_authenticated/inbox': typeof AuthenticatedInboxRoute
+  '/_authenticated/lent-items': typeof AuthenticatedLentItemsRoute
+  '/_authenticated/lost-found': typeof AuthenticatedLostFoundRoute
   '/_authenticated/maintenance': typeof AuthenticatedMaintenanceRoute
+  '/_authenticated/quality': typeof AuthenticatedQualityRoute
   '/_authenticated/reception': typeof AuthenticatedReceptionRoute
   '/_authenticated/requests': typeof AuthenticatedRequestsRoute
   '/_authenticated/reservations': typeof AuthenticatedReservationsRoute
@@ -249,13 +313,20 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/tarifs'
+    | '/agenda'
     | '/analytics'
+    | '/cash-register'
     | '/communication'
+    | '/consignes'
+    | '/contracts'
     | '/dashboard'
     | '/finance'
     | '/housekeeping'
     | '/inbox'
+    | '/lent-items'
+    | '/lost-found'
     | '/maintenance'
+    | '/quality'
     | '/reception'
     | '/requests'
     | '/reservations'
@@ -274,13 +345,20 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/tarifs'
+    | '/agenda'
     | '/analytics'
+    | '/cash-register'
     | '/communication'
+    | '/consignes'
+    | '/contracts'
     | '/dashboard'
     | '/finance'
     | '/housekeeping'
     | '/inbox'
+    | '/lent-items'
+    | '/lost-found'
     | '/maintenance'
+    | '/quality'
     | '/reception'
     | '/requests'
     | '/reservations'
@@ -300,13 +378,20 @@ export interface FileRouteTypes {
     | '/login'
     | '/mentions-legales'
     | '/tarifs'
+    | '/_authenticated/agenda'
     | '/_authenticated/analytics'
+    | '/_authenticated/cash-register'
     | '/_authenticated/communication'
+    | '/_authenticated/consignes'
+    | '/_authenticated/contracts'
     | '/_authenticated/dashboard'
     | '/_authenticated/finance'
     | '/_authenticated/housekeeping'
     | '/_authenticated/inbox'
+    | '/_authenticated/lent-items'
+    | '/_authenticated/lost-found'
     | '/_authenticated/maintenance'
+    | '/_authenticated/quality'
     | '/_authenticated/reception'
     | '/_authenticated/requests'
     | '/_authenticated/reservations'
@@ -450,11 +535,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReceptionRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/quality': {
+      id: '/_authenticated/quality'
+      path: '/quality'
+      fullPath: '/quality'
+      preLoaderRoute: typeof AuthenticatedQualityRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/maintenance': {
       id: '/_authenticated/maintenance'
       path: '/maintenance'
       fullPath: '/maintenance'
       preLoaderRoute: typeof AuthenticatedMaintenanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/lost-found': {
+      id: '/_authenticated/lost-found'
+      path: '/lost-found'
+      fullPath: '/lost-found'
+      preLoaderRoute: typeof AuthenticatedLostFoundRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/lent-items': {
+      id: '/_authenticated/lent-items'
+      path: '/lent-items'
+      fullPath: '/lent-items'
+      preLoaderRoute: typeof AuthenticatedLentItemsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/inbox': {
@@ -485,11 +591,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/contracts': {
+      id: '/_authenticated/contracts'
+      path: '/contracts'
+      fullPath: '/contracts'
+      preLoaderRoute: typeof AuthenticatedContractsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/consignes': {
+      id: '/_authenticated/consignes'
+      path: '/consignes'
+      fullPath: '/consignes'
+      preLoaderRoute: typeof AuthenticatedConsignesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/communication': {
       id: '/_authenticated/communication'
       path: '/communication'
       fullPath: '/communication'
       preLoaderRoute: typeof AuthenticatedCommunicationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/cash-register': {
+      id: '/_authenticated/cash-register'
+      path: '/cash-register'
+      fullPath: '/cash-register'
+      preLoaderRoute: typeof AuthenticatedCashRegisterRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/analytics': {
@@ -499,17 +626,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/agenda': {
+      id: '/_authenticated/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AuthenticatedAgendaRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAgendaRoute: typeof AuthenticatedAgendaRoute
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRoute
+  AuthenticatedCashRegisterRoute: typeof AuthenticatedCashRegisterRoute
   AuthenticatedCommunicationRoute: typeof AuthenticatedCommunicationRoute
+  AuthenticatedConsignesRoute: typeof AuthenticatedConsignesRoute
+  AuthenticatedContractsRoute: typeof AuthenticatedContractsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFinanceRoute: typeof AuthenticatedFinanceRoute
   AuthenticatedHousekeepingRoute: typeof AuthenticatedHousekeepingRoute
   AuthenticatedInboxRoute: typeof AuthenticatedInboxRoute
+  AuthenticatedLentItemsRoute: typeof AuthenticatedLentItemsRoute
+  AuthenticatedLostFoundRoute: typeof AuthenticatedLostFoundRoute
   AuthenticatedMaintenanceRoute: typeof AuthenticatedMaintenanceRoute
+  AuthenticatedQualityRoute: typeof AuthenticatedQualityRoute
   AuthenticatedReceptionRoute: typeof AuthenticatedReceptionRoute
   AuthenticatedRequestsRoute: typeof AuthenticatedRequestsRoute
   AuthenticatedReservationsRoute: typeof AuthenticatedReservationsRoute
@@ -519,13 +660,20 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAgendaRoute: AuthenticatedAgendaRoute,
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRoute,
+  AuthenticatedCashRegisterRoute: AuthenticatedCashRegisterRoute,
   AuthenticatedCommunicationRoute: AuthenticatedCommunicationRoute,
+  AuthenticatedConsignesRoute: AuthenticatedConsignesRoute,
+  AuthenticatedContractsRoute: AuthenticatedContractsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedFinanceRoute: AuthenticatedFinanceRoute,
   AuthenticatedHousekeepingRoute: AuthenticatedHousekeepingRoute,
   AuthenticatedInboxRoute: AuthenticatedInboxRoute,
+  AuthenticatedLentItemsRoute: AuthenticatedLentItemsRoute,
+  AuthenticatedLostFoundRoute: AuthenticatedLostFoundRoute,
   AuthenticatedMaintenanceRoute: AuthenticatedMaintenanceRoute,
+  AuthenticatedQualityRoute: AuthenticatedQualityRoute,
   AuthenticatedReceptionRoute: AuthenticatedReceptionRoute,
   AuthenticatedRequestsRoute: AuthenticatedRequestsRoute,
   AuthenticatedReservationsRoute: AuthenticatedReservationsRoute,

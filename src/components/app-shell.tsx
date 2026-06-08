@@ -8,6 +8,7 @@ import {
 import {
   LayoutDashboard, CalendarDays, BedDouble, Brush, Wrench, MessageSquare,
   Headset, Users, Receipt, BarChart3, Settings, LogOut, Bell, Search, Inbox, CreditCard,
+  Calendar, ScrollText, Wallet, Package, SearchCheck, ClipboardCheck, FileText,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,22 +23,29 @@ type NavGroup = { label: string; items: NavItem[] };
 const allGroups: NavGroup[] = [
   { label: "Vue d'ensemble", items: [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/agenda", label: "Agenda", icon: Calendar },
+    { to: "/communication", label: "Annonces", icon: Bell },
   ]},
   { label: "Opérations", items: [
+    { to: "/consignes", label: "Consignes", icon: ScrollText },
     { to: "/reservations", label: "Réservations", icon: CalendarDays, roles: ["super_admin", "admin", "receptionist"] },
-    { to: "/rooms", label: "Chambres", icon: BedDouble, roles: ["super_admin", "admin", "receptionist"] },
-    { to: "/housekeeping", label: "Housekeeping", icon: Brush, roles: ["super_admin", "admin", "housekeeper"] },
-    { to: "/maintenance", label: "Maintenance", icon: Wrench, roles: ["super_admin", "admin", "maintenance"] },
+    { to: "/rooms", label: "État des chambres", icon: BedDouble, roles: ["super_admin", "admin", "receptionist"] },
+    { to: "/housekeeping", label: "Checklists", icon: Brush, roles: ["super_admin", "admin", "housekeeper"] },
+    { to: "/cash-register", label: "Fonds de caisse", icon: Wallet, roles: ["super_admin", "admin", "receptionist"] },
+    { to: "/lost-found", label: "Objets trouvés", icon: SearchCheck, roles: ["super_admin", "admin", "receptionist", "housekeeper"] },
+    { to: "/lent-items", label: "Objets prêtés", icon: Package, roles: ["super_admin", "admin", "receptionist"] },
+    { to: "/maintenance", label: "Problèmes techniques", icon: Wrench, roles: ["super_admin", "admin", "maintenance"] },
     { to: "/requests", label: "Conciergerie", icon: MessageSquare, roles: ["super_admin", "admin", "receptionist"] },
   ]},
   { label: "Réception", items: [
     { to: "/reception", label: "Check-in / out", icon: Headset, roles: ["super_admin", "admin", "receptionist"] },
   ]},
   { label: "Management", items: [
-    { to: "/finance", label: "Finance", icon: Receipt, roles: ["super_admin", "admin"] },
-    { to: "/analytics", label: "Analytics", icon: BarChart3, roles: ["super_admin", "admin"] },
+    { to: "/quality", label: "Contrôles qualités", icon: ClipboardCheck, roles: ["super_admin", "admin"] },
+    { to: "/contracts", label: "Mes contrats", icon: FileText, roles: ["super_admin", "admin"] },
+    { to: "/finance", label: "Mes factures", icon: Receipt, roles: ["super_admin", "admin"] },
+    { to: "/analytics", label: "Mes chiffres", icon: BarChart3, roles: ["super_admin", "admin"] },
     { to: "/subscriptions", label: "Abonnements", icon: CreditCard, roles: ["super_admin"] },
-    { to: "/communication", label: "Communication", icon: Users },
     { to: "/inbox", label: "Boîte de réception", icon: Inbox, roles: ["super_admin", "admin"] },
     { to: "/settings", label: "Paramètres", icon: Settings, roles: ["super_admin", "admin"] },
   ]},
