@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { NotificationsPanel } from "@/components/notifications-panel";
+import { EstablishmentSwitcher } from "@/components/establishment-switcher";
 
 type NavItem = { to: string; label: string; icon: any; roles?: string[] };
 type NavGroup = { label: string; items: NavItem[] };
@@ -121,7 +122,8 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input placeholder="Rechercher (réservations, chambres, invités...)" className="pl-9" />
             </div>
-            <div className="ml-auto flex items-center gap-2">
+            <div className="ml-auto flex items-center gap-3">
+              <EstablishmentSwitcher />
               <NotificationsPanel />
               <div className="h-8 w-8 rounded-full gradient-bg" />
             </div>

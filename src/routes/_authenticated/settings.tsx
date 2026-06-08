@@ -11,7 +11,8 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Settings, Building2, Users, Bell, ClipboardCheck, Loader2, UserPlus } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Settings, Building2, Users, Bell, ClipboardCheck, Loader2, UserPlus, Mail, Send } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -77,6 +78,42 @@ function SettingsPage() {
     },
   });
 
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState("receptionist");
+
+  const { data: invitations = [] } = useQuery({
+    queryKey: ["staff-invitations"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("staff_invitations" as any)
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) return [];
+      return data as any[];
+    },
+  });
+
+  const sendInvite = useMutation({
+    mutationFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Non connecté");
+      if (!settings?.id) throw new Error("Configurez d'abord votre établissement");
+      const { error } = await supabase.from("staff_invitations" as any).insert({
+        establishment_id: settings.id,
+        email: inviteEmail.trim().toLowerCase(),
+        role: inviteRole,
+        invited_by: user.id,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      setInviteEmail("");
+      qc.invalidateQueries({ queryKey: ["staff-invitations"] });
+      toast.success("Invitation envoyée !");
+    },
+    onError: (e: any) => toast.error(e.message),
+  });
+
   const [notifications, setNotifications] = useState({
     new_reservation: true,
     check_in: true,
@@ -135,12 +172,79 @@ function SettingsPage() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="staff" className="mt-4">
+        <TabsContent value="staff" className="mt-4 space-y-4">
           <Card className="glass">
-            <CardHeader><CardTitle>Gestion du personnel</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-sm text-muted-foreground">Membres de l'équipe et leurs rôles.</p>
+            <CardHeader><CardTitle className="flex items-center gap-2"><UserPlus className="h-5 w-5" /> Inviter un membre</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <Label>Email du collaborateur</Label>
+                  <Input
+                    type="email"
+                    placeholder="nom@example.com"
+                    value={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.value)}
+                  />
+                </div>
+                <div className="w-44">
+                  <Label>Rôle</Label>
+                  <Select value={inviteRole} onValueChange={setInviteRole}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="admin">Admin</SelectItem>
+                      <SelectItem value="receptionist">Réceptionniste</SelectItem>
+                      <SelectItem value="housekeeper">Housekeeper</SelectItem>
+                      <SelectItem value="maintenance">Maintenance</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <Button
+                className="gradient-bg text-white font-semibold"
+                disabled={!inviteEmail.trim() || sendInvite.isPending}
+                onClick={() => sendInvite.mutate()}
+              >
+                {sendInvite.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+                Envoyer l'invitation
+              </Button>
+            </CardContent>
+          </Card>
 
+          {invitations.length > 0 && (
+            <Card className="glass">
+              <CardHeader><CardTitle className="flex items-center gap-2"><Mail className="h-5 w-5" /> Invitations envoyées</CardTitle></CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Rôle</TableHead>
+                      <TableHead>Statut</TableHead>
+                      <TableHead>Date</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {invitations.map((inv: any) => (
+                      <TableRow key={inv.id}>
+                        <TableCell className="font-medium">{inv.email}</TableCell>
+                        <TableCell><Badge variant="outline">{ROLE_LABELS[inv.role] || inv.role}</Badge></TableCell>
+                        <TableCell>
+                          <Badge variant={inv.status === "accepted" ? "default" : "secondary"}>
+                            {inv.status === "pending" ? "En attente" : inv.status === "accepted" ? "Acceptée" : inv.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{new Date(inv.created_at).toLocaleDateString("fr-FR")}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          )}
+
+          <Card className="glass">
+            <CardHeader><CardTitle>Équipe actuelle</CardTitle></CardHeader>
+            <CardContent className="space-y-4">
               {staffMembers.length > 0 ? (
                 <Table>
                   <TableHeader>
@@ -161,17 +265,17 @@ function SettingsPage() {
                   </TableBody>
                 </Table>
               ) : (
-                <p className="text-sm text-muted-foreground italic">Aucun membre assigné. Ajoutez des rôles dans Supabase (table user_roles).</p>
+                <p className="text-sm text-muted-foreground italic">Aucun membre assigné pour le moment.</p>
               )}
 
-              <div className="mt-6 rounded-lg border border-border p-4">
-                <h3 className="text-sm font-medium mb-3 flex items-center gap-2"><UserPlus className="h-4 w-4" /> Rôles disponibles</h3>
+              <div className="mt-4 rounded-lg border border-border p-4">
+                <h3 className="text-sm font-medium mb-3">Rôles disponibles</h3>
                 <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                  <div><span className="font-medium text-foreground">Super Admin</span> — Accès total, gestion abonnements</div>
-                  <div><span className="font-medium text-foreground">Admin</span> — Gestion complète de l'établissement</div>
-                  <div><span className="font-medium text-foreground">Réceptionniste</span> — Check-in/out, réservations, chambres</div>
-                  <div><span className="font-medium text-foreground">Housekeeper</span> — Tâches de ménage uniquement</div>
-                  <div><span className="font-medium text-foreground">Maintenance</span> — Tickets maintenance uniquement</div>
+                  <div><span className="font-medium text-foreground">Super Admin</span> — Accès total</div>
+                  <div><span className="font-medium text-foreground">Admin</span> — Gestion complète</div>
+                  <div><span className="font-medium text-foreground">Réceptionniste</span> — Check-in/out, réservations</div>
+                  <div><span className="font-medium text-foreground">Housekeeper</span> — Tâches de ménage</div>
+                  <div><span className="font-medium text-foreground">Maintenance</span> — Tickets maintenance</div>
                 </div>
               </div>
             </CardContent>
