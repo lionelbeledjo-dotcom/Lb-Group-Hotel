@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BedDouble, Brush, Wrench, Headset, BarChart3, MessageSquare, Receipt, ShieldCheck,
@@ -53,34 +53,39 @@ function Landing() {
     name: "", email: "", phone: "", company: "", rooms: "", message: "",
   });
   const [demoSent, setDemoSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   async function handleDemo(e: React.FormEvent) {
     e.preventDefault();
-    const { error } = await supabase.from("demo_requests" as any).insert({
-      name: demoForm.name,
-      email: demoForm.email,
-      phone: demoForm.phone,
-      company: demoForm.company,
-      rooms: demoForm.rooms || null,
-      message: demoForm.message || null,
-    });
-    if (error) {
-      toast.error("Erreur lors de l'envoi. Réessayez.");
-      return;
-    }
-    // Notification email instantanée à l'admin
-    supabase.functions.invoke("notify-demo", {
-      body: {
+    setLoading(true);
+    try {
+      // Sauvegarder dans Supabase
+      await supabase.from("demo_requests" as any).insert({
         name: demoForm.name,
         email: demoForm.email,
         phone: demoForm.phone,
         company: demoForm.company,
-        rooms: demoForm.rooms,
-        message: demoForm.message,
-      },
-    }).catch(() => {});
-    setDemoSent(true);
-    toast.success("Demande envoyée ! Notre équipe vous contactera sous 24h.");
+        rooms: demoForm.rooms || null,
+        message: demoForm.message || null,
+      });
+      // Notification email instantanée à l'admin
+      await supabase.functions.invoke("notify-demo", {
+        body: {
+          name: demoForm.name,
+          email: demoForm.email,
+          phone: demoForm.phone,
+          company: demoForm.company,
+          rooms: demoForm.rooms,
+          message: demoForm.message,
+        },
+      });
+      setDemoSent(true);
+      toast.success("Demande envoyée ! Notre équipe vous contactera sous 24h.");
+    } catch {
+      toast.error("Erreur lors de l'envoi. Réessayez.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -233,9 +238,8 @@ function Landing() {
       </section>
 
       {/* DEMO FORM */}
-      <section id="demo" className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.2_0.06_250)] to-[oklch(0.28_0.08_250)]" />
-        <div className="relative container mx-auto px-6">
+      <section id="demo" className="py-20 bg-gradient-to-br from-[oklch(0.2_0.06_250)] to-[oklch(0.28_0.08_250)]">
+        <div className="container mx-auto px-6">
           <div className="grid gap-12 lg:grid-cols-2 items-center">
             <div className="text-white">
               <h2 className="text-3xl font-bold md:text-4xl mb-4" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -284,23 +288,25 @@ function Landing() {
                     </div>
                     <div>
                       <Label>Nombre de chambres</Label>
-                      <Select value={demoForm.rooms} onValueChange={(v) => setDemoForm({ ...demoForm, rooms: v })}>
-                        <SelectTrigger><SelectValue placeholder="Sélectionner" /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="1-10">1 à 10</SelectItem>
-                          <SelectItem value="11-30">11 à 30</SelectItem>
-                          <SelectItem value="31-50">31 à 50</SelectItem>
-                          <SelectItem value="51-100">51 à 100</SelectItem>
-                          <SelectItem value="100+">Plus de 100</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <select
+                        value={demoForm.rooms}
+                        onChange={(e) => setDemoForm({ ...demoForm, rooms: e.target.value })}
+                        className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      >
+                        <option value="">Sélectionner</option>
+                        <option value="1-10">1 à 10</option>
+                        <option value="11-30">11 à 30</option>
+                        <option value="31-50">31 à 50</option>
+                        <option value="51-100">51 à 100</option>
+                        <option value="100+">Plus de 100</option>
+                      </select>
                     </div>
                     <div>
                       <Label>Message (optionnel)</Label>
                       <Textarea value={demoForm.message} onChange={(e) => setDemoForm({ ...demoForm, message: e.target.value })} placeholder="Précisez vos besoins..." className="min-h-[80px]" />
                     </div>
-                    <Button type="submit" size="lg" className="w-full gold-bg text-[oklch(0.15_0.03_250)] font-bold text-base gold-glow">
-                      Demander ma démo gratuite <ArrowRight className="ml-2 h-5 w-5" />
+                    <Button type="submit" size="lg" disabled={loading} className="w-full gold-bg text-[oklch(0.15_0.03_250)] font-bold text-base gold-glow disabled:opacity-70">
+                      {loading ? "Envoi en cours..." : "Demander ma démo gratuite"} {!loading && <ArrowRight className="ml-2 h-5 w-5" />}
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">En soumettant, vous acceptez d'être recontacté par notre équipe.</p>
                   </form>
@@ -366,6 +372,7 @@ function Landing() {
           </div>
         </div>
       </footer>
+      <Toaster />
     </div>
   );
 }
