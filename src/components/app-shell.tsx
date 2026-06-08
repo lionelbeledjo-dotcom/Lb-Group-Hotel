@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState, useRouteContext } from "@tanstack/react-router";
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import {
   SidebarProvider, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent,
   SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger,
@@ -8,8 +8,9 @@ import {
 import {
   LayoutDashboard, CalendarDays, BedDouble, Brush, Wrench, MessageSquare,
   Headset, Users, Receipt, BarChart3, Settings, LogOut, Bell, Search, Inbox, CreditCard,
-  Calendar, ScrollText, Wallet, Package, SearchCheck, ClipboardCheck, FileText,
+  Calendar, ScrollText, Wallet, Package, SearchCheck, ClipboardCheck, FileText, User,
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { signOut } from "@/lib/auth";
@@ -54,11 +55,16 @@ const allGroups: NavGroup[] = [
 export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [searchQuery, setSearchQuery] = useState("");
 
   let userRoles: string[] = [];
+  let userName = "";
+  let userEmail = "";
   try {
-    const ctx = useRouteContext({ from: "/_authenticated" });
-    userRoles = (ctx as any).roles ?? [];
+    const ctx = useRouteContext({ from: "/_authenticated" }) as any;
+    userRoles = ctx.roles ?? [];
+    userName = ctx.user?.user_metadata?.full_name || "";
+    userEmail = ctx.user?.email || "";
   } catch {
     // context not available yet
   }
@@ -113,6 +119,15 @@ export function AppShell({ children }: { children: ReactNode }) {
             ))}
           </SidebarContent>
           <SidebarFooter>
+            <div className="flex items-center gap-2 px-2 py-2 group-data-[collapsible=icon]:justify-center">
+              <div className="grid h-8 w-8 place-items-center rounded-full gradient-bg text-xs font-bold text-white shrink-0">
+                {userName ? userName.charAt(0).toUpperCase() : "U"}
+              </div>
+              <div className="flex-1 min-w-0 group-data-[collapsible=icon]:hidden">
+                <p className="text-xs font-medium truncate">{userName || "Utilisateur"}</p>
+                <p className="text-[10px] text-muted-foreground truncate">{userEmail}</p>
+              </div>
+            </div>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={handleSignOut}>
@@ -126,14 +141,50 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="flex flex-1 flex-col">
           <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/70 px-4 backdrop-blur">
             <SidebarTrigger />
-            <div className="relative ml-2 hidden flex-1 max-w-md md:block">
+            <form
+              className="relative ml-2 hidden flex-1 max-w-md md:block"
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (searchQuery.trim()) {
+                  navigate({ to: "/reservations", search: { q: searchQuery.trim() } as any });
+                  setSearchQuery("");
+                }
+              }}
+            >
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input placeholder="Rechercher (réservations, chambres, invités...)" className="pl-9" />
-            </div>
+              <Input
+                placeholder="Rechercher (réservations, chambres, invités...)"
+                className="pl-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
             <div className="ml-auto flex items-center gap-3">
               <EstablishmentSwitcher />
               <NotificationsPanel />
-              <div className="h-8 w-8 rounded-full gradient-bg" />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 rounded-full focus:outline-none">
+                    <div className="grid h-8 w-8 place-items-center rounded-full gradient-bg text-xs font-bold text-white">
+                      {userName ? userName.charAt(0).toUpperCase() : userEmail ? userEmail.charAt(0).toUpperCase() : "U"}
+                    </div>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="px-3 py-2">
+                    <p className="text-sm font-medium">{userName || "Utilisateur"}</p>
+                    <p className="text-xs text-muted-foreground">{userEmail}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate({ to: "/settings" })}>
+                    <Settings className="mr-2 h-4 w-4" /> Paramètres
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" /> Déconnexion
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </header>
           <main className="flex-1 p-6">{children}</main>
