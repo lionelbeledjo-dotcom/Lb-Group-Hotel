@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { Loader2, Lock, ShieldCheck } from "lucide-react";
 
 export const Route = createFileRoute("/admin-login")({
@@ -148,6 +149,7 @@ function AdminLoginPage() {
           </CardContent>
         </Card>
       </div>
+      <Toaster />
     </div>
   );
 }
