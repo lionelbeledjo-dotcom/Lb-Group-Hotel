@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollText, Plus, Loader2, AlertTriangle, Info, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_CONSIGNES } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/consignes")({
   head: () => ({ meta: [{ title: "Consignes — LB Group" }] }),
@@ -42,8 +43,8 @@ function ConsignesPage() {
         .from("consignes" as any)
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) return [];
-      return data as any[];
+      if (error) return DEMO_CONSIGNES;
+      return (data as any[]).length > 0 ? data as any[] : DEMO_CONSIGNES;
     },
   });
 

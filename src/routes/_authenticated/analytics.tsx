@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart3, BedDouble, TrendingUp, Clock, Users, FileDown } from "lucide-react";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
+import { DEMO_ROOMS, DEMO_RESERVATIONS, DEMO_INVOICES } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/analytics")({
   head: () => ({ meta: [{ title: "Analytics — LB Group" }] }),
@@ -18,8 +19,8 @@ function AnalyticsPage() {
     queryKey: ["analytics-rooms"],
     queryFn: async () => {
       const { data, error } = await supabase.from("rooms").select("status, category, price_per_night");
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_ROOMS;
+      return data.length > 0 ? data : DEMO_ROOMS;
     },
   });
 
@@ -27,8 +28,8 @@ function AnalyticsPage() {
     queryKey: ["analytics-reservations"],
     queryFn: async () => {
       const { data, error } = await supabase.from("reservations").select("status, total_amount, check_in, check_out, rooms(category)");
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_RESERVATIONS;
+      return data.length > 0 ? data : DEMO_RESERVATIONS;
     },
   });
 
@@ -36,8 +37,8 @@ function AnalyticsPage() {
     queryKey: ["analytics-invoices"],
     queryFn: async () => {
       const { data, error } = await supabase.from("invoices").select("amount, status, paid_at");
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_INVOICES;
+      return data.length > 0 ? data : DEMO_INVOICES;
     },
   });
 

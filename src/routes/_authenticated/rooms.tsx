@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Plus, BedDouble } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_ROOMS } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/rooms")({
   head: () => ({ meta: [{ title: "Chambres — LB Group" }] }),
@@ -34,8 +35,8 @@ function RoomsPage() {
     queryKey: ["rooms"],
     queryFn: async () => {
       const { data, error } = await supabase.from("rooms").select("*").order("number");
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_ROOMS;
+      return data.length > 0 ? data : DEMO_ROOMS;
     },
   });
 

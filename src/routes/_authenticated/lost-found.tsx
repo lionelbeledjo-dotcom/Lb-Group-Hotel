@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SearchCheck, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_LOST_FOUND } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/lost-found")({
   head: () => ({ meta: [{ title: "Objets trouvés — LB Group" }] }),
@@ -31,8 +32,8 @@ function LostFoundPage() {
         .from("lost_found" as any)
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) return [];
-      return data as any[];
+      if (error) return DEMO_LOST_FOUND;
+      return (data as any[]).length > 0 ? data as any[] : DEMO_LOST_FOUND;
     },
   });
 

@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ClipboardCheck, Plus, Loader2, Star } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_QUALITY } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/quality")({
   head: () => ({ meta: [{ title: "Contrôles qualités — LB Group" }] }),
@@ -31,8 +32,8 @@ function QualityPage() {
         .from("quality_controls" as any)
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) return [];
-      return data as any[];
+      if (error) return DEMO_QUALITY;
+      return (data as any[]).length > 0 ? data as any[] : DEMO_QUALITY;
     },
   });
 

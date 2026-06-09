@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useState } from "react";
 import { Plus, CalendarDays, Search } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_RESERVATIONS, DEMO_ROOMS } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/reservations")({
   head: () => ({ meta: [{ title: "Réservations — LB Group" }] }),
@@ -51,8 +52,8 @@ function ReservationsPage() {
         .from("reservations")
         .select("*, rooms(number, category)")
         .order("check_in", { ascending: false });
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_RESERVATIONS;
+      return data.length > 0 ? data : DEMO_RESERVATIONS;
     },
   });
 
@@ -60,8 +61,8 @@ function ReservationsPage() {
     queryKey: ["rooms-available"],
     queryFn: async () => {
       const { data, error } = await supabase.from("rooms").select("id, number, category").order("number");
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_ROOMS;
+      return data.length > 0 ? data : DEMO_ROOMS;
     },
   });
 

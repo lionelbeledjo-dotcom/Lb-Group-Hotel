@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Package, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_LENT_ITEMS } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/lent-items")({
   head: () => ({ meta: [{ title: "Objets prêtés — LB Group" }] }),
@@ -29,8 +30,8 @@ function LentItemsPage() {
         .from("lent_items" as any)
         .select("*")
         .order("created_at", { ascending: false });
-      if (error) return [];
-      return data as any[];
+      if (error) return DEMO_LENT_ITEMS;
+      return (data as any[]).length > 0 ? data as any[] : DEMO_LENT_ITEMS;
     },
   });
 

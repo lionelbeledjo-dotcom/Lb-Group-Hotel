@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Plus, TrendingUp, TrendingDown, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_CASH_REGISTER } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/cash-register")({
   head: () => ({ meta: [{ title: "Fonds de caisse — LB Group" }] }),
@@ -29,8 +30,8 @@ function CashRegisterPage() {
         .select("*")
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) return [];
-      return data as any[];
+      if (error) return DEMO_CASH_REGISTER;
+      return (data as any[]).length > 0 ? data as any[] : DEMO_CASH_REGISTER;
     },
   });
 

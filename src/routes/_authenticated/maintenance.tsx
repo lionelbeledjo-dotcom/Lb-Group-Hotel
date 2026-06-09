@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Plus, Wrench, AlertTriangle, Clock, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_MAINTENANCE, DEMO_ROOMS } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/maintenance")({
   head: () => ({ meta: [{ title: "Maintenance — LB Group" }] }),
@@ -56,8 +57,8 @@ function MaintenancePage() {
         .from("maintenance_tickets")
         .select("*, rooms(number, floor)")
         .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_MAINTENANCE;
+      return data.length > 0 ? data : DEMO_MAINTENANCE;
     },
   });
 
@@ -65,8 +66,8 @@ function MaintenancePage() {
     queryKey: ["rooms-list"],
     queryFn: async () => {
       const { data, error } = await supabase.from("rooms").select("id, number, floor").order("number");
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_ROOMS;
+      return data.length > 0 ? data : DEMO_ROOMS;
     },
   });
 

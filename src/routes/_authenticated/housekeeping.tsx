@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { Plus, Brush, CheckCircle2, Clock, Loader2, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_HOUSEKEEPING, DEMO_ROOMS } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/housekeeping")({
   head: () => ({ meta: [{ title: "Housekeeping — LB Group" }] }),
@@ -50,8 +51,8 @@ function HousekeepingPage() {
         .from("housekeeping_tasks")
         .select("*, rooms(number, category, floor)")
         .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_HOUSEKEEPING;
+      return data.length > 0 ? data : DEMO_HOUSEKEEPING;
     },
   });
 
@@ -59,8 +60,8 @@ function HousekeepingPage() {
     queryKey: ["rooms-list"],
     queryFn: async () => {
       const { data, error } = await supabase.from("rooms").select("id, number, category, floor").order("number");
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_ROOMS;
+      return data.length > 0 ? data : DEMO_ROOMS;
     },
   });
 

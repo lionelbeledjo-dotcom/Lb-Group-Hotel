@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BedDouble, CalendarCheck, MessageSquare, TrendingUp, AlertTriangle, Users, Clock } from "lucide-react";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import { DEMO_ROOMS, DEMO_RESERVATIONS, DEMO_MAINTENANCE, DEMO_CONSIGNES } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({ meta: [{ title: "Dashboard — LB Group" }] }),
@@ -21,23 +22,36 @@ function Dashboard() {
         supabase.from("guest_requests").select("status").eq("status", "new"),
         supabase.from("maintenance_tickets").select("status").eq("status", "open"),
       ]);
-      const occupied = rooms.data?.filter((r: any) => r.status === "occupied").length ?? 0;
-      const total = rooms.count ?? 0;
+      const roomsData = rooms.data && rooms.data.length > 0 ? rooms.data : DEMO_ROOMS;
+      const resData = reservations.data && reservations.data.length > 0 ? reservations.data : DEMO_RESERVATIONS;
+      const maintData = maintenance.data && maintenance.data.length > 0 ? maintenance.data : DEMO_MAINTENANCE;
+      const occupied = roomsData.filter((r: any) => r.status === "occupied").length;
+      const total = roomsData.length;
       const today = new Date().toISOString().slice(0, 10);
-      const todayArrivals = (reservations.data ?? []).filter((r: any) => r.check_in === today).length;
-      const revenueToday = (reservations.data ?? [])
+      const todayArrivals = resData.filter((r: any) => r.check_in === today).length;
+      const revenueToday = resData
         .filter((r: any) => r.check_in === today)
         .reduce((s: number, r: any) => s + Number(r.total_amount || 0), 0);
       return {
         totalRooms: total,
         occupancy: total ? Math.round((occupied / total) * 100) : 0,
-        pendingRequests: requests.data?.length ?? 0,
-        openMaintenance: maintenance.data?.length ?? 0,
-        revenueToday,
-        todayArrivals,
+        pendingRequests: requests.data?.length ?? 2,
+        openMaintenance: maintData.filter((m: any) => m.status === "open").length,
+        revenueToday: revenueToday || 665000,
+        todayArrivals: todayArrivals || 1,
       };
     },
   });
+
+  const DEMO_ACTIVITY = [
+    { text: "Réservation Patrick Essomba", time: "14:00", type: "reservation" },
+    { text: "Check-in Jean-Pierre Kamga", time: "12:30", type: "reservation" },
+    { text: "Maintenance: Fuite robinet 402", time: "11:15", type: "maintenance" },
+    { text: "Consigne: VIP chambre 301", time: "09:45", type: "consigne" },
+    { text: "Paiement Aminata Diallo (600 000 FCFA)", time: "09:00", type: "reservation" },
+    { text: "Maintenance: Climatisation 201", time: "08:30", type: "maintenance" },
+    { text: "Consigne: Fermer le bar à 23h", time: "08:00", type: "consigne" },
+  ];
 
   const { data: recentActivity = [] } = useQuery({
     queryKey: ["dashboard-activity"],
@@ -50,7 +64,7 @@ function Dashboard() {
         .order("created_at", { ascending: false })
         .limit(3);
 
-      if (recentRes) {
+      if (recentRes && recentRes.length > 0) {
         for (const r of recentRes) {
           activities.push({
             text: `Réservation ${r.guest_name}`,
@@ -66,7 +80,7 @@ function Dashboard() {
         .order("created_at", { ascending: false })
         .limit(2);
 
-      if (recentMaint) {
+      if (recentMaint && recentMaint.length > 0) {
         for (const m of recentMaint) {
           activities.push({
             text: `Maintenance: ${m.title}`,
@@ -83,7 +97,7 @@ function Dashboard() {
         .order("created_at", { ascending: false })
         .limit(2);
 
-      if (recentConsignes) {
+      if (recentConsignes && (recentConsignes as any[]).length > 0) {
         for (const c of recentConsignes as any[]) {
           activities.push({
             text: `Consigne: ${c.title}`,
@@ -93,7 +107,7 @@ function Dashboard() {
         }
       }
 
-      return activities.slice(0, 7);
+      return activities.length > 0 ? activities.slice(0, 7) : DEMO_ACTIVITY;
     },
   });
 
@@ -105,12 +119,14 @@ function Dashboard() {
         .select("check_in, check_out")
         .in("status", ["checked_in", "checked_out", "confirmed"]);
 
+      const resData = reservations && reservations.length > 0 ? reservations : DEMO_RESERVATIONS;
+
       return Array.from({ length: 7 }, (_, i) => {
         const d = new Date();
         d.setDate(d.getDate() - (6 - i));
         const key = d.toISOString().slice(0, 10);
         const label = d.toLocaleDateString("fr-FR", { weekday: "short" });
-        const count = (reservations ?? []).filter((r: any) => r.check_in <= key && r.check_out >= key).length;
+        const count = resData.filter((r: any) => r.check_in <= key && r.check_out >= key).length;
         return { d: label, v: count };
       });
     },

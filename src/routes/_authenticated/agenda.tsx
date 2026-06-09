@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar, Plus, Clock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_AGENDA } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/agenda")({
   head: () => ({ meta: [{ title: "Agenda — LB Group" }] }),
@@ -37,8 +38,8 @@ function AgendaPage() {
         .from("agenda_events" as any)
         .select("*")
         .order("date", { ascending: true });
-      if (error) return [];
-      return data as any[];
+      if (error) return DEMO_AGENDA;
+      return (data as any[]).length > 0 ? data as any[] : DEMO_AGENDA;
     },
   });
 

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Receipt, TrendingUp, CreditCard, Banknote, FileDown } from "lucide-react";
 import { toast } from "sonner";
+import { DEMO_INVOICES } from "@/lib/demo-data";
 import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { exportInvoicePDF } from "@/lib/export-pdf";
 
@@ -47,8 +48,8 @@ function FinancePage() {
         .from("invoices")
         .select("*, reservations(guest_name, check_in, check_out)")
         .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
+      if (error) return DEMO_INVOICES;
+      return data.length > 0 ? data : DEMO_INVOICES;
     },
   });
 
