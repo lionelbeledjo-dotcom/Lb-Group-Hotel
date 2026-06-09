@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LB Group — Brochure Commerciale</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #1a2744;
+      --navy-light: #2a3f6e;
+      --gold: #c8a45c;
+      --gold-light: #e8c96d;
+      --white: #ffffff;
+      --gray-50: #f8f9fc;
+      --gray-100: #eef1f5;
+      --gray-400: #8b95a5;
+      --gray-600: #4a5568;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--navy);
+      line-height: 1.6;
+      background: var(--white);
+    }
+
+    h1, h2, h3, h4, h5 { font-family: 'Poppins', sans-serif; }
+
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 0;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* PAGE 1 — COUVERTURE */
+    .cover {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 60%, #1e3a5f 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--white);
+      padding: 60px 50px;
+    }
+
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200, 164, 92, 0.15) 0%, transparent 70%);
+    }
+
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -100px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200, 164, 92, 0.1) 0%, transparent 70%);
+    }
+
+    .cover-logo {
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 30px;
+      box-shadow: 0 20px 60px rgba(200, 164, 92, 0.3);
+    }
+
+    .cover h1 {
+      font-size: 42px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .cover h1 span { color: var(--gold); }
+
+    .cover-subtitle {
+      font-size: 18px;
+      color: rgba(255,255,255,0.8);
+      max-width: 500px;
+      margin-bottom: 50px;
+      font-weight: 300;
+    }
+
+    .cover-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+      margin-bottom: 60px;
+    }
+
+    .cover-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      width: 100%;
+      max-width: 500px;
+      position: relative;
+    }
+
+    .cover-stat {
+      text-align: center;
+    }
+
+    .cover-stat .value {
+      font-family: 'Poppins', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .cover-stat .label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.7);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .cover-footer {
+      position: absolute;
+      bottom: 40px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .cover-footer a { color: var(--gold); text-decoration: none; }
+
+    /* PAGE 2 — QUI SOMMES-NOUS */
+    .page-inner {
+      padding: 50px;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    .page-header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-header-logo .icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .page-header-logo span {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--navy);
+    }
+
+    .page-header-logo span em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .page-number {
+      font-size: 11px;
+      color: var(--gray-400);
+    }
+
+    .section-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .section-title span { color: var(--gold); }
+
+    .section-subtitle {
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-bottom: 30px;
+    }
+
+    .intro-text {
+      font-size: 15px;
+      color: var(--gray-600);
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    .intro-text strong { color: var(--navy); }
+
+    .highlight-box {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      border-radius: 16px;
+      padding: 30px;
+      color: var(--white);
+      margin: 30px 0;
+    }
+
+    .highlight-box h3 {
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: var(--gold);
+    }
+
+    .highlight-box p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .value-card {
+      background: var(--gray-50);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid var(--gray-100);
+    }
+
+    .value-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .value-card h4::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .value-card p {
+      font-size: 12px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* PAGE 3 — MODULES */
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .module-card {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-100);
+      border-radius: 12px;
+      padding: 18px;
+      transition: all 0.3s;
+    }
+
+    .module-card h4 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .module-card p {
+      font-size: 11px;
+      color: var(--gray-600);
+      line-height: 1.5;
+    }
+
+    .module-card .icon-wrapper {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--navy), var(--navy-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      color: var(--white);
+      font-size: 16px;
+    }
+
+    .module-card.gold .icon-wrapper {
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+    }
+
+    /* PAGE 4 — AVANTAGES */
+    .advantages-list {
+      list-style: none;
+    }
+
+    .advantages-list li {
+      display: flex;
+      gap: 16px;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .advantages-list li:last-child { border-bottom: none; }
+
+    .advantage-number {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      flex-shrink: 0;
+    }
+
+    .advantage-content h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .advantage-content p {
+      font-size: 12px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* PAGE 5 — ACCOMPAGNEMENT */
+    .process-steps {
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      left: 12px;
+      top: 10px;
+      bottom: 10px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold), var(--navy));
+    }
+
+    .process-step {
+      position: relative;
+      padding: 16px 0 16px 24px;
+    }
+
+    .process-step::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 22px;
+      width: 12px;
+      height: 12px;
+      background: var(--gold);
+      border-radius: 50%;
+      border: 3px solid var(--white);
+      box-shadow: 0 0 0 2px var(--gold);
+    }
+
+    .process-step h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .process-step p {
+      font-size: 12px;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    .guarantee-box {
+      background: var(--gray-50);
+      border: 2px solid var(--gold);
+      border-radius: 16px;
+      padding: 28px;
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .guarantee-box h3 {
+      font-size: 18px;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .guarantee-box p {
+      font-size: 13px;
+      color: var(--gray-600);
+      line-height: 1.7;
+    }
+
+    /* PAGE 6 — TARIFS */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .pricing-card {
+      border: 1px solid var(--gray-100);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      position: relative;
+      background: var(--white);
+    }
+
+    .pricing-card.featured {
+      border: 2px solid var(--gold);
+      background: linear-gradient(to bottom, rgba(200, 164, 92, 0.05), var(--white));
+      transform: scale(1.03);
+    }
+
+    .pricing-card.featured::after {
+      content: 'POPULAIRE';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 12px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+
+    .pricing-card h4 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .pricing-card .price {
+      font-family: 'Poppins', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .pricing-card .price span {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--gray-400);
+    }
+
+    .pricing-card .desc {
+      font-size: 11px;
+      color: var(--gray-400);
+      margin: 8px 0 16px;
+    }
+
+    .pricing-features {
+      text-align: left;
+      list-style: none;
+    }
+
+    .pricing-features li {
+      font-size: 11px;
+      color: var(--gray-600);
+      padding: 5px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pricing-features li::before {
+      content: '✓';
+      color: var(--gold);
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    /* PAGE 7 — CONTACT */
+    .contact-page {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: var(--white);
+      padding: 60px 50px;
+    }
+
+    .contact-page h2 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .contact-page h2 span { color: var(--gold); }
+
+    .contact-page .tagline {
+      font-size: 16px;
+      color: rgba(255,255,255,0.7);
+      max-width: 450px;
+      margin-bottom: 50px;
+    }
+
+    .contact-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 50px;
+    }
+
+    .contact-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    .contact-card .label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .contact-card .value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: var(--navy);
+      padding: 16px 40px;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 15px 40px rgba(200, 164, 92, 0.3);
+    }
+
+    .contact-page .footer-note {
+      position: absolute;
+      bottom: 40px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* PRINT STYLES */
+    @media print {
+      body { margin: 0; }
+      .page { page-break-after: always; margin: 0; box-shadow: none; }
+    }
+
+    @media screen {
+      body { background: #e2e8f0; padding: 20px 0; }
+      .page { box-shadow: 0 4px 40px rgba(0,0,0,0.1); margin-bottom: 30px; border-radius: 4px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PAGE 1 — COUVERTURE -->
+<div class="page cover">
+  <div class="cover-badge">&#9733; Plateforme N°1 de gestion hoteliere en Afrique</div>
+  <div class="cover-logo">LB</div>
+  <h1>LB <span>Group</span></h1>
+  <p class="cover-subtitle">La plateforme de gestion hoteliere tout-en-un qui transforme votre etablissement en machine de performance.</p>
+  <div class="cover-stats">
+    <div class="cover-stat">
+      <div class="value">13+</div>
+      <div class="label">Modules</div>
+    </div>
+    <div class="cover-stat">
+      <div class="value">24/7</div>
+      <div class="label">Support</div>
+    </div>
+    <div class="cover-stat">
+      <div class="value">15min</div>
+      <div class="label">Installation</div>
+    </div>
+  </div>
+  <div class="cover-footer">
+    <a href="https://lb-group.lovable.app">lb-group.lovable.app</a> &nbsp;|&nbsp; +33 6 60 06 17 23 &nbsp;|&nbsp; lbcloudadmin@gmail.com
+  </div>
+</div>
+
+<!-- PAGE 2 — QUI SOMMES-NOUS -->
+<div class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div class="page-header-logo">
+        <div class="icon">LB</div>
+        <span>LB <em>Group</em></span>
+      </div>
+      <div class="page-number">02 / 07</div>
+    </div>
+
+    <h2 class="section-title">Qui sommes-<span>nous</span> ?</h2>
+    <p class="section-subtitle">Votre partenaire technologique pour une gestion hoteliere d'excellence</p>
+
+    <p class="intro-text">
+      <strong>LB Group</strong> est une entreprise technologique specialisee dans la conception de solutions de gestion pour les etablissements d'hebergement : hotels, residences, appartements meubles et maisons d'hotes.
+    </p>
+    <p class="intro-text">
+      Notre mission est simple : <strong>vous permettre de gerer l'integralite de votre etablissement depuis une seule plateforme</strong>, accessible partout, a tout moment, sur tous vos appareils.
+    </p>
+    <p class="intro-text">
+      Nous ne sommes pas un simple fournisseur de logiciel. Nous sommes votre <strong>partenaire de croissance</strong>. Chaque client beneficie d'un accompagnement personnalise, d'une mise en place assistee, et d'un suivi continu pour garantir que la plateforme repond a vos besoins reels.
+    </p>
+
+    <div class="highlight-box">
+      <h3>Notre engagement</h3>
+      <p>Nous ne livrons pas un outil pour vous laisser seul. Nous vous accompagnons du premier jour jusqu'a ce que votre equipe soit 100% autonome — et meme apres. Votre reussite est notre reussite.</p>
+    </div>
+
+    <div class="values-grid">
+      <div class="value-card">
+        <h4>Proximite</h4>
+        <p>Un interlocuteur dedie qui connait votre etablissement et vos enjeux.</p>
+      </div>
+      <div class="value-card">
+        <h4>Innovation</h4>
+        <p>Mises a jour regulieres, nouvelles fonctionnalites basees sur vos retours.</p>
+      </div>
+      <div class="value-card">
+        <h4>Fiabilite</h4>
+        <p>Hebergement cloud haute disponibilite. Vos donnees sont en securite 24/7.</p>
+      </div>
+      <div class="value-card">
+        <h4>Adaptabilite</h4>
+        <p>Solution pensee pour l'Afrique : Mobile Money, multi-langues, usage hors-ligne.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3 — MODULES -->
+<div class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div class="page-header-logo">
+        <div class="icon">LB</div>
+        <span>LB <em>Group</em></span>
+      </div>
+      <div class="page-number">03 / 07</div>
+    </div>
+
+    <h2 class="section-title">13 modules <span>integres</span></h2>
+    <p class="section-subtitle">Tout ce dont vous avez besoin, dans une seule plateforme unifiee</p>
+
+    <div class="modules-grid">
+      <div class="module-card">
+        <div class="icon-wrapper">&#128197;</div>
+        <h4>Agenda & Planning</h4>
+        <p>Planifiez les check-ins, reunions, livraisons et evenements de votre etablissement.</p>
+      </div>
+      <div class="module-card gold">
+        <div class="icon-wrapper">&#128221;</div>
+        <h4>Consignes d'equipe</h4>
+        <p>Transmettez des directives prioritaires a vos equipes en temps reel.</p>
+      </div>
+      <div class="module-card">
+        <div class="icon-wrapper">&#128197;</div>
+        <h4>Reservations</h4>
+        <p>Gerez vos reservations, clients, sejours et historiques complets.</p>
+      </div>
+      <div class="module-card gold">
+        <div class="icon-wrapper">&#128719;</div>
+        <h4>Etat des chambres</h4>
+        <p>Visualisez en temps reel le statut de chaque chambre (libre, occupee, nettoyage...).</p>
+      </div>
+      <div class="module-card">
+        <div class="icon-wrapper">&#128700;</div>
+        <h4>Checklists / Housekeeping</h4>
+        <p>Assignez les taches menage, suivez l'avancement, notez la qualite.</p>
+      </div>
+      <div class="module-card gold">
+        <div class="icon-wrapper">&#128176;</div>
+        <h4>Fonds de caisse</h4>
+        <p>Suivi des entrees/sorties d'argent avec solde en temps reel.</p>
+      </div>
+      <div class="module-card">
+        <div class="icon-wrapper">&#128270;</div>
+        <h4>Objets trouves</h4>
+        <p>Registre des objets trouves avec suivi de restitution aux clients.</p>
+      </div>
+      <div class="module-card gold">
+        <div class="icon-wrapper">&#128230;</div>
+        <h4>Objets pretes</h4>
+        <p>Tracez les objets pretes aux clients (fer a repasser, adaptateur...).</p>
+      </div>
+      <div class="module-card">
+        <div class="icon-wrapper">&#128295;</div>
+        <h4>Problemes techniques</h4>
+        <p>Tickets maintenance avec priorite, assignation et suivi de resolution.</p>
+      </div>
+      <div class="module-card gold">
+        <div class="icon-wrapper">&#9989;</div>
+        <h4>Controles qualites</h4>
+        <p>Inspections avec scoring /10, categories et observations detaillees.</p>
+      </div>
+      <div class="module-card">
+        <div class="icon-wrapper">&#128196;</div>
+        <h4>Contrats & Fournisseurs</h4>
+        <p>Gerez vos contrats prestataires, dates d'echeance et montants.</p>
+      </div>
+      <div class="module-card gold">
+        <div class="icon-wrapper">&#128178;</div>
+        <h4>Facturation & Finance</h4>
+        <p>Factures automatiques, multi-methodes de paiement, export PDF.</p>
+      </div>
+      <div class="module-card">
+        <div class="icon-wrapper">&#128200;</div>
+        <h4>Analytics & KPIs</h4>
+        <p>Tableaux de bord, graphiques, taux d'occupation, revenus, performances.</p>
+      </div>
+      <div class="module-card gold">
+        <div class="icon-wrapper">&#128101;</div>
+        <h4>Gestion des equipes</h4>
+        <p>Roles (admin, reception, menage, maintenance), invitations, permissions.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4 — AVANTAGES -->
+<div class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div class="page-header-logo">
+        <div class="icon">LB</div>
+        <span>LB <em>Group</em></span>
+      </div>
+      <div class="page-number">04 / 07</div>
+    </div>
+
+    <h2 class="section-title">Pourquoi choisir <span>LB Group</span> ?</h2>
+    <p class="section-subtitle">Les raisons concretes qui font la difference au quotidien</p>
+
+    <ul class="advantages-list">
+      <li>
+        <div class="advantage-number">1</div>
+        <div class="advantage-content">
+          <h4>Tout-en-un : plus besoin de 5 logiciels differents</h4>
+          <p>Reservations, menage, maintenance, finance, analytics... tout est dans LB Group. Une seule connexion, une seule interface, une seule facture. Fini la dispersion et les erreurs de synchronisation entre outils.</p>
+        </div>
+      </li>
+      <li>
+        <div class="advantage-number">2</div>
+        <div class="advantage-content">
+          <h4>Accompagnement humain, pas juste un logiciel</h4>
+          <p>Nous ne vous vendons pas un outil pour disparaitre ensuite. Chaque client a un referent dedie. Nous formons votre equipe, nous configurons le systeme pour vous, et nous restons disponibles pour repondre a vos questions au quotidien.</p>
+        </div>
+      </li>
+      <li>
+        <div class="advantage-number">3</div>
+        <div class="advantage-content">
+          <h4>Deploiement en 15 minutes, pas en 3 mois</h4>
+          <p>Pas de serveur a installer, pas de technicien a engager. Votre etablissement est operationnel en moins d'un quart d'heure. Nous faisons la configuration initiale avec vous par visio.</p>
+        </div>
+      </li>
+      <li>
+        <div class="advantage-number">4</div>
+        <div class="advantage-content">
+          <h4>Concu pour l'Afrique et les marches emergents</h4>
+          <p>Paiements Mobile Money (Orange, MTN, Wave), fonctionnement optimal meme avec une connexion limitee, interface simple pour les equipes non-techniques, devise FCFA integree.</p>
+        </div>
+      </li>
+      <li>
+        <div class="advantage-number">5</div>
+        <div class="advantage-content">
+          <h4>Accessible partout : web, mobile, tablette</h4>
+          <p>Application progressive (PWA) qui fonctionne sur tous les appareils. Votre directeur consulte les KPIs depuis son telephone, la receptionniste gere les check-ins depuis la tablette a l'accueil.</p>
+        </div>
+      </li>
+      <li>
+        <div class="advantage-number">6</div>
+        <div class="advantage-content">
+          <h4>Securite et confidentialite maximales</h4>
+          <p>Donnees chiffrees, hebergement cloud certifie, sauvegardes automatiques. Conformite RGPD. Chaque membre de votre equipe a des acces strictement limites a son role.</p>
+        </div>
+      </li>
+      <li>
+        <div class="advantage-number">7</div>
+        <div class="advantage-content">
+          <h4>Mises a jour permanentes sans frais supplementaires</h4>
+          <p>Nouvelles fonctionnalites chaque mois, basees sur les retours de nos clients. Vous beneficiez toujours de la derniere version sans rien faire.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- PAGE 5 — ACCOMPAGNEMENT -->
+<div class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div class="page-header-logo">
+        <div class="icon">LB</div>
+        <span>LB <em>Group</em></span>
+      </div>
+      <div class="page-number">05 / 07</div>
+    </div>
+
+    <h2 class="section-title">Un accompagnement <span>de A a Z</span></h2>
+    <p class="section-subtitle">Nous ne vous laissons jamais seul. Votre reussite est notre priorite.</p>
+
+    <div class="process-steps">
+      <div class="process-step">
+        <h4>1. Decouverte & Diagnostic</h4>
+        <p>Appel de 30 minutes pour comprendre votre etablissement, vos defis quotidiens, et definir ensemble vos priorites. Nous adaptons la plateforme a VOS besoins.</p>
+      </div>
+      <div class="process-step">
+        <h4>2. Configuration assistee</h4>
+        <p>Notre equipe configure votre espace : chambres, categories, tarifs, equipe, permissions. Vous n'avez rien a faire — nous nous occupons de tout.</p>
+      </div>
+      <div class="process-step">
+        <h4>3. Formation de votre equipe</h4>
+        <p>Session de formation en visio (ou en presentiel selon votre localisation) pour chaque role : direction, reception, housekeeping, maintenance. Supports fournis.</p>
+      </div>
+      <div class="process-step">
+        <h4>4. Lancement & Migration</h4>
+        <p>Mise en production avec import de vos donnees existantes si necessaire. Nous restons en ligne pendant les premieres 48h pour reagir instantanement.</p>
+      </div>
+      <div class="process-step">
+        <h4>5. Suivi continu & Support</h4>
+        <p>Point mensuel pour analyser vos KPIs, identifier les axes d'amelioration, et vous presenter les nouvelles fonctionnalites. Support WhatsApp/email illimite.</p>
+      </div>
+    </div>
+
+    <div class="guarantee-box">
+      <h3>&#128170; Notre garantie</h3>
+      <p>Si apres 14 jours d'essai vous n'etes pas satisfait, nous vous remboursons integralement. Sans question, sans justification. C'est notre facon de prouver que nous croyons en notre produit.</p>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 6 — TARIFS -->
+<div class="page">
+  <div class="page-inner">
+    <div class="page-header">
+      <div class="page-header-logo">
+        <div class="icon">LB</div>
+        <span>LB <em>Group</em></span>
+      </div>
+      <div class="page-number">06 / 07</div>
+    </div>
+
+    <h2 class="section-title">Nos <span>formules</span></h2>
+    <p class="section-subtitle">Des tarifs transparents, sans surprise, adaptes a votre taille</p>
+
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <h4>Starter</h4>
+        <div class="price">29 000<span> FCFA/mois</span></div>
+        <div class="desc">Ideal pour les petits etablissements (1-15 chambres)</div>
+        <ul class="pricing-features">
+          <li>Tous les 13 modules</li>
+          <li>Jusqu'a 3 utilisateurs</li>
+          <li>1 etablissement</li>
+          <li>Support email</li>
+          <li>Mises a jour incluses</li>
+          <li>Sauvegarde quotidienne</li>
+        </ul>
+      </div>
+      <div class="pricing-card featured">
+        <h4>Business</h4>
+        <div class="price">59 000<span> FCFA/mois</span></div>
+        <div class="desc">Pour les hotels moyens (15-50 chambres)</div>
+        <ul class="pricing-features">
+          <li>Tous les 13 modules</li>
+          <li>Jusqu'a 10 utilisateurs</li>
+          <li>Multi-etablissements (3)</li>
+          <li>Support prioritaire 24/7</li>
+          <li>Formation equipe incluse</li>
+          <li>Rapports PDF automatiques</li>
+          <li>Notifications email</li>
+          <li>Referent dedie</li>
+        </ul>
+      </div>
+      <div class="pricing-card">
+        <h4>Enterprise</h4>
+        <div class="price">Sur mesure</div>
+        <div class="desc">Pour les grands groupes (50+ chambres)</div>
+        <ul class="pricing-features">
+          <li>Tous les 13 modules</li>
+          <li>Utilisateurs illimites</li>
+          <li>Etablissements illimites</li>
+          <li>API & integrations</li>
+          <li>Support prioritaire + SLA</li>
+          <li>Formation sur site</li>
+          <li>Personnalisation interface</li>
+          <li>Account Manager dedie</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; background: var(--gray-50); border-radius: 12px; padding: 20px; text-align: center;">
+      <p style="font-size: 13px; color: var(--gray-600); margin-bottom: 8px;"><strong style="color: var(--navy);">14 jours d'essai gratuit</strong> sur toutes les formules</p>
+      <p style="font-size: 11px; color: var(--gray-400);">Sans carte bancaire requise. Configuration offerte. Annulation a tout moment.</p>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <h3 style="font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 12px;">Methodes de paiement acceptees</h3>
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+        <div style="background: var(--gray-50); border-radius: 8px; padding: 12px; text-align: center; font-size: 11px; color: var(--gray-600);">
+          <div style="font-size: 20px; margin-bottom: 4px;">&#128179;</div>
+          Carte bancaire
+        </div>
+        <div style="background: var(--gray-50); border-radius: 8px; padding: 12px; text-align: center; font-size: 11px; color: var(--gray-600);">
+          <div style="font-size: 20px; margin-bottom: 4px;">&#128241;</div>
+          Mobile Money
+        </div>
+        <div style="background: var(--gray-50); border-radius: 8px; padding: 12px; text-align: center; font-size: 11px; color: var(--gray-600);">
+          <div style="font-size: 20px; margin-bottom: 4px;">&#127974;</div>
+          Virement bancaire
+        </div>
+        <div style="background: var(--gray-50); border-radius: 8px; padding: 12px; text-align: center; font-size: 11px; color: var(--gray-600);">
+          <div style="font-size: 20px; margin-bottom: 4px;">&#128181;</div>
+          Especes (local)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 7 — CONTACT -->
+<div class="page contact-page">
+  <h2>Pret a <span>transformer</span><br>votre gestion ?</h2>
+  <p class="tagline">Demandez votre demonstration gratuite et decouvrez comment LB Group peut revolutionner le quotidien de votre etablissement.</p>
+
+  <div class="contact-cards">
+    <div class="contact-card">
+      <div class="label">Telephone</div>
+      <div class="value">+33 6 60 06 17 23</div>
+    </div>
+    <div class="contact-card">
+      <div class="label">Email</div>
+      <div class="value">lbcloudadmin@gmail.com</div>
+    </div>
+    <div class="contact-card">
+      <div class="label">Site web</div>
+      <div class="value">lb-group.lovable.app</div>
+    </div>
+    <div class="contact-card">
+      <div class="label">Localisation</div>
+      <div class="value">France / Cameroun</div>
+    </div>
+  </div>
+
+  <a href="https://lb-group.lovable.app/#demo" class="cta-button">Demander ma demo gratuite &rarr;</a>
+
+  <div class="footer-note">
+    &copy; 2025 LB Group &middot; Tous droits reserves &middot; Gestion hoteliere nouvelle generation
+  </div>
+</div>
+
+</body>
+</html>
