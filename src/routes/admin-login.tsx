@@ -18,7 +18,9 @@ function AdminLoginPage() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<"login" | "register">("login");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -29,6 +31,18 @@ function AdminLoginPage() {
   async function signIn(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    if (mode === "register") {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
+      });
+      setLoading(false);
+      if (error) return toast.error(error.message);
+      toast.success("Compte créé ! Vérifiez votre email pour confirmer.");
+      setMode("login");
+      return;
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) return toast.error(error.message);
@@ -72,34 +86,52 @@ function AdminLoginPage() {
 
             <div className="flex items-center gap-2 mb-2">
               <Lock className="h-5 w-5 text-[oklch(0.35_0.12_250)]" />
-              <h1 className="text-2xl font-bold">Connexion Admin</h1>
+              <h1 className="text-2xl font-bold">{mode === "login" ? "Connexion Admin" : "Créer un compte"}</h1>
             </div>
-            <p className="mb-6 text-sm text-muted-foreground">Entrez vos identifiants pour accéder au back-office.</p>
+            <p className="mb-6 text-sm text-muted-foreground">
+              {mode === "login" ? "Entrez vos identifiants pour accéder au back-office." : "Remplissez les informations pour créer votre compte administrateur."}
+            </p>
 
             <form onSubmit={signIn} className="space-y-4">
+              {mode === "register" && (
+                <div>
+                  <Label>Nom complet</Label>
+                  <Input value={fullName} onChange={(e) => setFullName(e.target.value)} required placeholder="Lionel Mbeledjo" className="h-11" />
+                </div>
+              )}
               <div>
                 <Label>Email professionnel</Label>
                 <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="admin@lbgroup.cm" className="h-11" />
               </div>
               <div>
                 <Label>Mot de passe</Label>
-                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" className="h-11" />
+                <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••" className="h-11" minLength={6} />
               </div>
-              <div className="text-right">
-                <button type="button" onClick={async () => {
-                  if (!email) return toast.error("Entrez votre email d'abord");
-                  const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/dashboard" });
-                  if (error) return toast.error(error.message);
-                  toast.success("Email de réinitialisation envoyé !");
-                }} className="text-xs text-[oklch(0.35_0.12_250)] hover:underline">
-                  Mot de passe oublié ?
-                </button>
-              </div>
+              {mode === "login" && (
+                <div className="text-right">
+                  <button type="button" onClick={async () => {
+                    if (!email) return toast.error("Entrez votre email d'abord");
+                    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + "/dashboard" });
+                    if (error) return toast.error(error.message);
+                    toast.success("Email de réinitialisation envoyé !");
+                  }} className="text-xs text-[oklch(0.35_0.12_250)] hover:underline">
+                    Mot de passe oublié ?
+                  </button>
+                </div>
+              )}
               <Button type="submit" className="w-full h-11 gradient-bg text-white font-semibold glow" disabled={loading}>
                 {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Se connecter
+                {mode === "login" ? "Se connecter" : "Créer mon compte"}
               </Button>
             </form>
+
+            <p className="mt-4 text-sm text-center text-muted-foreground">
+              {mode === "login" ? (
+                <>Pas encore de compte ? <button type="button" onClick={() => setMode("register")} className="text-[oklch(0.35_0.12_250)] font-medium hover:underline">Créer un compte</button></>
+              ) : (
+                <>Déjà un compte ? <button type="button" onClick={() => setMode("login")} className="text-[oklch(0.35_0.12_250)] font-medium hover:underline">Se connecter</button></>
+              )}
+            </p>
 
             <div className="my-5 flex items-center gap-3 text-xs text-muted-foreground">
               <div className="h-px flex-1 bg-border" /> OU <div className="h-px flex-1 bg-border" />
