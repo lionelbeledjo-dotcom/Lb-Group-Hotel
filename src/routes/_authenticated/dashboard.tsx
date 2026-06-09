@@ -1,10 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BedDouble, CalendarCheck, MessageSquare, TrendingUp, AlertTriangle, Users, Clock } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
+import {
+  BedDouble, CalendarCheck, MessageSquare, TrendingUp, AlertTriangle, Users, Clock,
+  Building2, DollarSign, ArrowUpRight, UserPlus, Mail, CreditCard,
+} from "lucide-react";
+import { LineChart, Line, BarChart, Bar, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { DEMO_ROOMS, DEMO_RESERVATIONS, DEMO_MAINTENANCE, DEMO_CONSIGNES } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -13,6 +16,207 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 });
 
 function Dashboard() {
+  let isSuperAdmin = false;
+  try {
+    const ctx = useRouteContext({ from: "/_authenticated" }) as any;
+    isSuperAdmin = (ctx.roles ?? []).includes("super_admin");
+  } catch {}
+
+  if (isSuperAdmin) return <SuperAdminDashboard />;
+  return <ClientDashboard />;
+}
+
+function SuperAdminDashboard() {
+  const mrrData = [
+    { month: "Jan", mrr: 180000 },
+    { month: "Fév", mrr: 238000 },
+    { month: "Mar", mrr: 297000 },
+    { month: "Avr", mrr: 356000 },
+    { month: "Mai", mrr: 415000 },
+    { month: "Jun", mrr: 503000 },
+  ];
+
+  const signupsData = [
+    { month: "Jan", signups: 1 },
+    { month: "Fév", signups: 1 },
+    { month: "Mar", signups: 2 },
+    { month: "Avr", signups: 1 },
+    { month: "Mai", signups: 2 },
+    { month: "Jun", signups: 1 },
+  ];
+
+  const recentEvents = [
+    { text: "Nouveau client: Le Rocher Suites (Limbe)", time: "Il y a 2h", type: "signup" },
+    { text: "Paiement reçu: Hôtel Le Marin — 79 000 FCFA", time: "Il y a 4h", type: "payment" },
+    { text: "Demande de démo: Fabrice Ndam", time: "Il y a 6h", type: "demo" },
+    { text: "Essai expire dans 3 jours: Hôtel des Palmiers", time: "Il y a 8h", type: "alert" },
+    { text: "Paiement reçu: Appart Hotel Central — 149 000 FCFA", time: "Hier", type: "payment" },
+    { text: "Nouveau client: Hôtel des Palmiers (Bafoussam)", time: "Hier", type: "signup" },
+    { text: "Impayé: Sunset Resort Kribi — relance envoyée", time: "Avant-hier", type: "alert" },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>Vue globale</h1>
+        <p className="text-sm text-muted-foreground">Tableau de bord propriétaire — LB Group Platform</p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card className="glass">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">MRR</div>
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
+            </div>
+            <div className="text-2xl font-bold gradient-text mt-1">503 000 FCFA</div>
+            <div className="flex items-center gap-1 mt-1 text-xs text-emerald-600">
+              <ArrowUpRight className="h-3 w-3" /> +21% vs mois dernier
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="glass">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">Hôtels actifs</div>
+              <Building2 className="h-4 w-4 text-blue-500" />
+            </div>
+            <div className="text-2xl font-bold mt-1">7</div>
+            <div className="text-xs text-muted-foreground mt-1">5 payants + 2 en essai</div>
+          </CardContent>
+        </Card>
+        <Card className="glass">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">Demandes de démo</div>
+              <Mail className="h-4 w-4 text-amber-500" />
+            </div>
+            <div className="text-2xl font-bold mt-1">5</div>
+            <div className="text-xs text-muted-foreground mt-1">2 nouvelles cette semaine</div>
+          </CardContent>
+        </Card>
+        <Card className="glass">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">Chambres gérées</div>
+              <BedDouble className="h-4 w-4 text-purple-500" />
+            </div>
+            <div className="text-2xl font-bold mt-1">280</div>
+            <div className="text-xs text-muted-foreground mt-1">sur 7 établissements</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Card className="glass lg:col-span-2">
+          <CardHeader><CardTitle>Évolution MRR (6 mois)</CardTitle></CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={240}>
+              <LineChart data={mrrData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.9 0.01 250)" />
+                <XAxis dataKey="month" stroke="oklch(0.5 0.02 250)" />
+                <YAxis stroke="oklch(0.5 0.02 250)" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                <Tooltip formatter={(v: number) => `${v.toLocaleString()} FCFA`} contentStyle={{ background: "oklch(0.99 0.005 250)", border: "1px solid oklch(0.9 0.01 250)", borderRadius: 12 }} />
+                <Line type="monotone" dataKey="mrr" stroke="oklch(0.35 0.12 250)" strokeWidth={3} dot={{ fill: "oklch(0.35 0.12 250)" }} name="MRR" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="glass">
+          <CardHeader><CardTitle className="flex items-center gap-2"><Clock className="h-4 w-4" /> Activité récente</CardTitle></CardHeader>
+          <CardContent className="space-y-3 text-sm">
+            {recentEvents.map((e, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <span className={`mt-1.5 h-2 w-2 rounded-full shrink-0 ${
+                  e.type === "payment" ? "bg-emerald-500" :
+                  e.type === "signup" ? "bg-blue-500" :
+                  e.type === "demo" ? "bg-amber-500" :
+                  "bg-red-500"
+                }`} />
+                <div className="flex-1 min-w-0">
+                  <span className="block truncate">{e.text}</span>
+                  <span className="text-[10px] text-muted-foreground">{e.time}</span>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card className="glass">
+          <CardHeader><CardTitle>Inscriptions mensuelles</CardTitle></CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={180}>
+              <BarChart data={signupsData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="oklch(0.9 0.01 250)" />
+                <XAxis dataKey="month" stroke="oklch(0.5 0.02 250)" />
+                <YAxis stroke="oklch(0.5 0.02 250)" />
+                <Tooltip contentStyle={{ background: "oklch(0.99 0.005 250)", border: "1px solid oklch(0.9 0.01 250)", borderRadius: 12 }} />
+                <Bar dataKey="signups" fill="oklch(0.75 0.16 85)" radius={[6, 6, 0, 0]} name="Inscriptions" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        <Card className="glass">
+          <CardHeader><CardTitle>Répartition des forfaits</CardTitle></CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {[
+                { plan: "Starter", count: 2, percent: 29, color: "bg-gray-500" },
+                { plan: "Business", count: 3, percent: 43, color: "bg-blue-500" },
+                { plan: "Enterprise", count: 2, percent: 28, color: "bg-purple-500" },
+              ].map((p) => (
+                <div key={p.plan}>
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <span className="font-medium">{p.plan}</span>
+                    <span className="text-muted-foreground">{p.count} clients ({p.percent}%)</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
+                    <div className={`h-full rounded-full ${p.color}`} style={{ width: `${p.percent}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="glass">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>Indicateurs clés</CardTitle>
+            <Badge variant="outline" className="text-xs">Temps réel</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+            <div className="text-center p-3 rounded-lg border">
+              <div className="text-2xl font-bold">6 036 000</div>
+              <div className="text-xs text-muted-foreground">ARR (FCFA)</div>
+            </div>
+            <div className="text-center p-3 rounded-lg border">
+              <div className="text-2xl font-bold">71 857</div>
+              <div className="text-xs text-muted-foreground">ARPU (FCFA/client)</div>
+            </div>
+            <div className="text-center p-3 rounded-lg border">
+              <div className="text-2xl font-bold">0%</div>
+              <div className="text-xs text-muted-foreground">Churn rate</div>
+            </div>
+            <div className="text-center p-3 rounded-lg border">
+              <div className="text-2xl font-bold">95%</div>
+              <div className="text-xs text-muted-foreground">Taux de conversion essai</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function ClientDashboard() {
   const { data: stats } = useQuery({
     queryKey: ["dashboard-stats"],
     queryFn: async () => {
@@ -86,23 +290,6 @@ function Dashboard() {
             text: `Maintenance: ${m.title}`,
             time: new Date(m.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
             type: "maintenance",
-          });
-        }
-      }
-
-      const { data: recentConsignes } = await supabase
-        .from("consignes" as any)
-        .select("title, created_at")
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(2);
-
-      if (recentConsignes && (recentConsignes as any[]).length > 0) {
-        for (const c of recentConsignes as any[]) {
-          activities.push({
-            text: `Consigne: ${c.title}`,
-            time: new Date(c.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }),
-            type: "consigne",
           });
         }
       }

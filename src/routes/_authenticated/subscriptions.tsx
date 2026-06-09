@@ -1,308 +1,277 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useRouteContext } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CreditCard, Check, Star, Users, TrendingUp, Loader2, Smartphone, Building } from "lucide-react";
-import { toast } from "sonner";
+import {
+  CreditCard, Users, TrendingUp, AlertCircle, Check, MoreHorizontal,
+  ArrowUpRight, ArrowDownRight, Calendar, DollarSign, Eye, Pause, Trash2, RefreshCw,
+} from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/_authenticated/subscriptions")({
   head: () => ({ meta: [{ title: "Abonnements — LB Group" }] }),
   component: SubscriptionsPage,
 });
 
-const plans = [
-  {
-    id: "starter",
-    name: "Starter",
-    price: 29000,
-    priceLabel: "29 000",
-    features: ["10 chambres", "3 modules", "1 utilisateur", "Support email"],
-    color: "border-gray-300",
-  },
-  {
-    id: "business",
-    name: "Business",
-    price: 79000,
-    priceLabel: "79 000",
-    features: ["50 chambres", "Tous modules", "5 utilisateurs", "Support 24/7", "Rapports PDF"],
-    color: "border-[oklch(0.75_0.16_85)]",
-    popular: true,
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    price: 149000,
-    priceLabel: "149 000",
-    features: ["Illimité", "Multi-sites", "Utilisateurs illimités", "Manager dédié", "SLA 99.9%"],
-    color: "border-[oklch(0.35_0.12_250)]",
-  },
+const PLANS = [
+  { id: "starter", name: "Starter", price: 29000, features: ["10 chambres", "3 modules", "1 utilisateur", "Support email"] },
+  { id: "business", name: "Business", price: 79000, features: ["50 chambres", "Tous modules", "5 utilisateurs", "Support 24/7", "Rapports PDF"] },
+  { id: "enterprise", name: "Enterprise", price: 149000, features: ["Illimité", "Multi-sites", "Utilisateurs illimités", "Manager dédié", "SLA 99.9%"] },
 ];
 
-const PAYMENT_METHODS = [
-  { id: "card", label: "Carte bancaire (Stripe)", icon: CreditCard, desc: "Visa, Mastercard" },
-  { id: "mobile_money", label: "Mobile Money", icon: Smartphone, desc: "MTN MoMo, Orange Money" },
-  { id: "bank_transfer", label: "Virement bancaire", icon: Building, desc: "Paiement sous 48h" },
+const DEMO_SUBSCRIBERS = [
+  { id: "1", hotel: "Hôtel Le Marin", owner: "Jean-Pierre Kamga", email: "jpkamga@gmail.com", plan: "business", amount: 79000, status: "active", method: "Mobile Money", started: "2025-03-15", next_billing: "2025-07-15", city: "Douala" },
+  { id: "2", hotel: "Résidence Prestige", owner: "Aminata Diallo", email: "aminata.d@gmail.com", plan: "business", amount: 79000, status: "active", method: "Carte bancaire", started: "2025-04-02", next_billing: "2025-07-02", city: "Yaoundé" },
+  { id: "3", hotel: "Appart Hotel Central", owner: "Paul Kouam", email: "pkouam@outlook.com", plan: "enterprise", amount: 149000, status: "active", method: "Virement", started: "2025-02-20", next_billing: "2025-07-20", city: "Douala" },
+  { id: "4", hotel: "Villa Bassa Lodge", owner: "Marie Fouda", email: "mfouda@gmail.com", plan: "starter", amount: 29000, status: "active", method: "Mobile Money", started: "2025-05-10", next_billing: "2025-07-10", city: "Kribi" },
+  { id: "5", hotel: "Hôtel des Palmiers", owner: "Thomas Ngono", email: "t.ngono@hotmail.com", plan: "business", amount: 79000, status: "trial", method: "—", started: "2025-06-01", next_billing: "2025-07-01", city: "Bafoussam" },
+  { id: "6", hotel: "Le Rocher Suites", owner: "Sandra Atangana", email: "s.atangana@gmail.com", plan: "starter", amount: 29000, status: "trial", method: "—", started: "2025-06-05", next_billing: "2025-07-05", city: "Limbe" },
+  { id: "7", hotel: "Grand Hôtel du Plateau", owner: "Georges Essomba", email: "g.essomba@yahoo.fr", plan: "enterprise", amount: 149000, status: "active", method: "Carte bancaire", started: "2025-01-08", next_billing: "2025-07-08", city: "Yaoundé" },
+  { id: "8", hotel: "Sunset Resort Kribi", owner: "Fabrice Ndam", email: "f.ndam@gmail.com", plan: "business", amount: 79000, status: "past_due", method: "Mobile Money", started: "2025-04-18", next_billing: "2025-06-18", city: "Kribi" },
 ];
 
 function SubscriptionsPage() {
-  const qc = useQueryClient();
-  const [checkoutPlan, setCheckoutPlan] = useState<typeof plans[0] | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [selectedSub, setSelectedSub] = useState<typeof DEMO_SUBSCRIBERS[0] | null>(null);
 
-  const { data: subscribers = [] } = useQuery({
-    queryKey: ["subscribers"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("subscriptions" as any)
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) return [];
-      return data as any[];
-    },
-  });
+  const activeCount = DEMO_SUBSCRIBERS.filter(s => s.status === "active").length;
+  const trialCount = DEMO_SUBSCRIBERS.filter(s => s.status === "trial").length;
+  const pastDueCount = DEMO_SUBSCRIBERS.filter(s => s.status === "past_due").length;
+  const mrr = DEMO_SUBSCRIBERS.filter(s => s.status === "active").reduce((sum, s) => sum + s.amount, 0);
+  const lastMonthMrr = 415000;
+  const mrrGrowth = Math.round(((mrr - lastMonthMrr) / lastMonthMrr) * 100);
 
-  const { data: currentSub } = useQuery({
-    queryKey: ["my-subscription"],
-    queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return null;
-      const { data } = await supabase
-        .from("subscriptions" as any)
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("status", "active")
-        .single();
-      return data as any;
-    },
-  });
-
-  const subscribe = useMutation({
-    mutationFn: async () => {
-      if (!checkoutPlan) throw new Error("Aucun plan sélectionné");
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Non connecté");
-
-      if (paymentMethod === "card") {
-        // Stripe checkout - on crée un pending record et on simule la redirection
-        const { error } = await supabase.from("subscriptions" as any).upsert({
-          user_id: user.id,
-          plan: checkoutPlan.id,
-          status: "pending",
-          amount: checkoutPlan.price,
-          payment_method: "card",
-          current_period_start: new Date().toISOString(),
-          current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        }, { onConflict: "user_id" });
-        if (error) throw error;
-        // TODO: Rediriger vers Stripe Checkout quand la clé API est configurée
-        // Pour l'instant on simule le succès
-        await supabase.from("subscriptions" as any).update({ status: "active" }).eq("user_id", user.id);
-      } else if (paymentMethod === "mobile_money") {
-        const { error } = await supabase.from("subscriptions" as any).upsert({
-          user_id: user.id,
-          plan: checkoutPlan.id,
-          status: "pending",
-          amount: checkoutPlan.price,
-          payment_method: "mobile_money",
-          current_period_start: new Date().toISOString(),
-          current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        }, { onConflict: "user_id" });
-        if (error) throw error;
-        // TODO: Intégrer avec CinetPay / Flutterwave pour Mobile Money
-        await supabase.from("subscriptions" as any).update({ status: "active" }).eq("user_id", user.id);
-      } else {
-        const { error } = await supabase.from("subscriptions" as any).upsert({
-          user_id: user.id,
-          plan: checkoutPlan.id,
-          status: "pending",
-          amount: checkoutPlan.price,
-          payment_method: "bank_transfer",
-          current_period_start: new Date().toISOString(),
-          current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        }, { onConflict: "user_id" });
-        if (error) throw error;
-      }
-    },
-    onSuccess: () => {
-      setCheckoutPlan(null);
-      qc.invalidateQueries({ queryKey: ["my-subscription"] });
-      qc.invalidateQueries({ queryKey: ["subscribers"] });
-      if (paymentMethod === "bank_transfer") {
-        toast.success("Abonnement en attente — envoyez le virement pour activation.");
-      } else {
-        toast.success("Abonnement activé avec succès !");
-      }
-    },
-    onError: (e: any) => toast.error(e.message),
-  });
-
-  const activeCount = subscribers.filter((s: any) => s.status === "active").length;
-  const trialCount = subscribers.filter((s: any) => s.status === "trial").length;
-  const mrr = subscribers.filter((s: any) => s.status === "active").reduce((sum: number, s: any) => sum + Number(s.amount || 0), 0);
+  const planDistribution = PLANS.map(p => ({
+    ...p,
+    count: DEMO_SUBSCRIBERS.filter(s => s.plan === p.id && s.status === "active").length,
+    revenue: DEMO_SUBSCRIBERS.filter(s => s.plan === p.id && s.status === "active").reduce((sum, s) => sum + s.amount, 0),
+  }));
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-semibold tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>Abonnements</h1>
-        <p className="text-sm text-muted-foreground">Gestion des forfaits et suivi des revenus récurrents</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-semibold tracking-tight" style={{ fontFamily: "'Poppins', sans-serif" }}>Gestion des abonnements</h1>
+          <p className="text-sm text-muted-foreground">Suivi de tous les clients abonnés et revenus de la plateforme</p>
+        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-4">
         <Card className="glass">
-          <CardContent className="flex items-center gap-3 py-4">
-            <Users className="h-5 w-5 text-[oklch(0.35_0.12_250)]" />
-            <div><div className="text-2xl font-semibold">{activeCount}</div><div className="text-xs text-muted-foreground">Abonnés actifs</div></div>
-          </CardContent>
-        </Card>
-        <Card className="glass">
-          <CardContent className="flex items-center gap-3 py-4">
-            <Star className="h-5 w-5 text-amber-500" />
-            <div><div className="text-2xl font-semibold">{trialCount}</div><div className="text-xs text-muted-foreground">En essai gratuit</div></div>
-          </CardContent>
-        </Card>
-        <Card className="glass">
-          <CardContent className="flex items-center gap-3 py-4">
-            <TrendingUp className="h-5 w-5 text-emerald-500" />
-            <div><div className="text-2xl font-semibold gold-text">{mrr.toLocaleString()} FCFA</div><div className="text-xs text-muted-foreground">MRR (revenu mensuel)</div></div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {currentSub && (
-        <Card className="glass border-2 border-[oklch(0.75_0.16_85)]">
-          <CardContent className="py-4 flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">Votre abonnement actuel</p>
-              <p className="text-lg font-semibold gold-text capitalize">{currentSub.plan}</p>
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">Abonnés actifs</div>
+              <Users className="h-4 w-4 text-emerald-500" />
             </div>
-            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30">
-              {currentSub.status === "active" ? "Actif" : currentSub.status}
-            </Badge>
+            <div className="text-2xl font-bold mt-1">{activeCount}</div>
+            <div className="text-xs text-muted-foreground mt-1">{trialCount} en essai gratuit</div>
           </CardContent>
         </Card>
-      )}
+        <Card className="glass">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">MRR</div>
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
+            </div>
+            <div className="text-2xl font-bold gradient-text mt-1">{mrr.toLocaleString()} FCFA</div>
+            <div className="flex items-center gap-1 mt-1 text-xs text-emerald-600">
+              <ArrowUpRight className="h-3 w-3" /> +{mrrGrowth}% vs mois dernier
+            </div>
+          </CardContent>
+        </Card>
+        <Card className="glass">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">ARR (annuel)</div>
+              <DollarSign className="h-4 w-4 text-blue-500" />
+            </div>
+            <div className="text-2xl font-bold mt-1">{(mrr * 12).toLocaleString()} FCFA</div>
+            <div className="text-xs text-muted-foreground mt-1">Projection annuelle</div>
+          </CardContent>
+        </Card>
+        <Card className="glass">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">Impayés</div>
+              <AlertCircle className="h-4 w-4 text-red-500" />
+            </div>
+            <div className="text-2xl font-bold text-red-600 mt-1">{pastDueCount}</div>
+            <div className="text-xs text-muted-foreground mt-1">Paiement en retard</div>
+          </CardContent>
+        </Card>
+      </div>
 
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Forfaits disponibles</h2>
-        <div className="grid gap-4 md:grid-cols-3">
-          {plans.map((plan) => (
-            <Card key={plan.name} className={`glass border-2 ${plan.color} relative`}>
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge className="gold-bg text-[oklch(0.15_0.03_250)] font-semibold"><Star className="mr-1 h-3 w-3" />Populaire</Badge>
-                </div>
-              )}
-              <CardHeader className="text-center pt-6">
-                <CardTitle>{plan.name}</CardTitle>
-                <div className="mt-2"><span className="text-3xl font-bold">{plan.priceLabel}</span> <span className="text-sm text-muted-foreground">FCFA/mois</span></div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <ul className="space-y-2">
+      <div className="grid gap-4 lg:grid-cols-3">
+        {planDistribution.map((p) => (
+          <Card key={p.id} className="glass">
+            <CardContent className="py-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-semibold">{p.name}</span>
+                <Badge variant="outline" className="text-xs">{p.price.toLocaleString()} FCFA/mois</Badge>
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold">{p.count}</span>
+                <span className="text-xs text-muted-foreground">clients actifs</span>
+              </div>
+              <div className="text-sm text-muted-foreground mt-1">{p.revenue.toLocaleString()} FCFA/mois</div>
+              <div className="mt-2 h-2 rounded-full bg-muted overflow-hidden">
+                <div className="h-full rounded-full gradient-bg" style={{ width: `${activeCount > 0 ? (p.count / activeCount) * 100 : 0}%` }} />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="glass overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Tous les abonnés</CardTitle>
+          <div className="flex gap-2">
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600">{activeCount} actifs</Badge>
+            <Badge variant="outline" className="bg-amber-500/10 text-amber-600">{trialCount} essai</Badge>
+            <Badge variant="outline" className="bg-red-500/10 text-red-600">{pastDueCount} impayés</Badge>
+          </div>
+        </CardHeader>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Hôtel</TableHead>
+              <TableHead>Propriétaire</TableHead>
+              <TableHead>Forfait</TableHead>
+              <TableHead>Montant</TableHead>
+              <TableHead>Méthode</TableHead>
+              <TableHead>Statut</TableHead>
+              <TableHead>Prochaine facturation</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {DEMO_SUBSCRIBERS.map((s) => (
+              <TableRow key={s.id}>
+                <TableCell>
+                  <div className="font-medium">{s.hotel}</div>
+                  <div className="text-xs text-muted-foreground">{s.city}</div>
+                </TableCell>
+                <TableCell>
+                  <div className="text-sm">{s.owner}</div>
+                  <div className="text-xs text-muted-foreground">{s.email}</div>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={
+                    s.plan === "enterprise" ? "bg-purple-500/10 text-purple-600" :
+                    s.plan === "business" ? "bg-blue-500/10 text-blue-600" :
+                    "bg-gray-500/10 text-gray-600"
+                  }>
+                    {s.plan.charAt(0).toUpperCase() + s.plan.slice(1)}
+                  </Badge>
+                </TableCell>
+                <TableCell className="font-medium">{s.amount.toLocaleString()} FCFA</TableCell>
+                <TableCell className="text-sm">{s.method}</TableCell>
+                <TableCell>
+                  <Badge variant="outline" className={
+                    s.status === "active" ? "bg-emerald-500/10 text-emerald-600" :
+                    s.status === "trial" ? "bg-amber-500/10 text-amber-600" :
+                    "bg-red-500/10 text-red-600"
+                  }>
+                    {s.status === "active" ? "Actif" : s.status === "trial" ? "Essai" : "Impayé"}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm">{new Date(s.next_billing).toLocaleDateString("fr-FR")}</TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setSelectedSub(s)}>
+                        <Eye className="mr-2 h-4 w-4" /> Voir détails
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <RefreshCw className="mr-2 h-4 w-4" /> Changer de forfait
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Pause className="mr-2 h-4 w-4" /> Suspendre
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-600">
+                        <Trash2 className="mr-2 h-4 w-4" /> Résilier
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Card>
+
+      <Card className="glass">
+        <CardHeader><CardTitle>Grille tarifaire actuelle</CardTitle></CardHeader>
+        <CardContent>
+          <div className="grid gap-4 md:grid-cols-3">
+            {PLANS.map((plan) => (
+              <div key={plan.id} className="rounded-xl border border-border p-5">
+                <div className="text-lg font-semibold">{plan.name}</div>
+                <div className="text-2xl font-bold mt-1">{plan.price.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">FCFA/mois</span></div>
+                <ul className="mt-3 space-y-1.5">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 text-sm">
-                      <Check className="h-4 w-4 text-emerald-500" /> {f}
+                    <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> {f}
                     </li>
                   ))}
                 </ul>
-                <Button
-                  className={`w-full ${currentSub?.plan === plan.id ? "" : "gradient-bg text-white font-semibold"}`}
-                  variant={currentSub?.plan === plan.id ? "outline" : "default"}
-                  disabled={currentSub?.plan === plan.id}
-                  onClick={() => setCheckoutPlan(plan)}
-                >
-                  {currentSub?.plan === plan.id ? "Plan actuel" : "S'abonner"}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      {subscribers.length > 0 && (
-        <div>
-          <h2 className="text-xl font-semibold mb-4">Clients abonnés</h2>
-          <Card className="glass overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Utilisateur</TableHead>
-                  <TableHead>Forfait</TableHead>
-                  <TableHead>Méthode</TableHead>
-                  <TableHead>Statut</TableHead>
-                  <TableHead>Montant</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {subscribers.map((s: any) => (
-                  <TableRow key={s.id}>
-                    <TableCell className="font-medium">{s.user_id?.slice(0, 8)}</TableCell>
-                    <TableCell><Badge variant="outline" className="capitalize">{s.plan}</Badge></TableCell>
-                    <TableCell className="text-sm capitalize">{s.payment_method?.replace("_", " ") || "—"}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={
-                        s.status === "active" ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30" :
-                        s.status === "pending" ? "bg-amber-500/10 text-amber-600 border-amber-500/30" :
-                        "bg-red-500/10 text-red-600 border-red-500/30"
-                      }>
-                        {s.status === "active" ? "Actif" : s.status === "pending" ? "En attente" : s.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">{Number(s.amount).toLocaleString()} FCFA</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Card>
-        </div>
-      )}
-
-      {/* Checkout Dialog */}
-      <Dialog open={!!checkoutPlan} onOpenChange={(open) => !open && setCheckoutPlan(null)}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Souscrire au forfait {checkoutPlan?.name}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="rounded-lg border border-border p-4 text-center">
-              <p className="text-sm text-muted-foreground">Montant mensuel</p>
-              <p className="text-3xl font-bold mt-1">{checkoutPlan?.priceLabel} <span className="text-sm font-normal text-muted-foreground">FCFA/mois</span></p>
-            </div>
-
-            <div>
-              <Label className="text-sm font-medium">Méthode de paiement</Label>
-              <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="mt-2 space-y-2">
-                {PAYMENT_METHODS.map((m) => (
-                  <label key={m.id} className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition-colors ${paymentMethod === m.id ? "border-primary bg-primary/5" : "border-border"}`}>
-                    <RadioGroupItem value={m.id} />
-                    <m.icon className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">{m.label}</p>
-                      <p className="text-xs text-muted-foreground">{m.desc}</p>
-                    </div>
-                  </label>
-                ))}
-              </RadioGroup>
-            </div>
-
-            <Button
-              className="w-full gradient-bg text-white font-semibold"
-              onClick={() => subscribe.mutate()}
-              disabled={subscribe.isPending}
-            >
-              {subscribe.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Confirmer le paiement
-            </Button>
-            <p className="text-[10px] text-muted-foreground text-center">
-              En confirmant, vous acceptez nos conditions d'utilisation. Annulation possible à tout moment.
-            </p>
+              </div>
+            ))}
           </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={!!selectedSub} onOpenChange={(open) => !open && setSelectedSub(null)}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Détails abonnement — {selectedSub?.hotel}</DialogTitle>
+          </DialogHeader>
+          {selectedSub && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="rounded-lg border p-3">
+                  <div className="text-xs text-muted-foreground">Propriétaire</div>
+                  <div className="font-medium mt-1">{selectedSub.owner}</div>
+                  <div className="text-xs text-muted-foreground">{selectedSub.email}</div>
+                </div>
+                <div className="rounded-lg border p-3">
+                  <div className="text-xs text-muted-foreground">Forfait</div>
+                  <div className="font-medium mt-1 capitalize">{selectedSub.plan}</div>
+                  <div className="text-xs text-muted-foreground">{selectedSub.amount.toLocaleString()} FCFA/mois</div>
+                </div>
+                <div className="rounded-lg border p-3">
+                  <div className="text-xs text-muted-foreground">Méthode de paiement</div>
+                  <div className="font-medium mt-1">{selectedSub.method}</div>
+                </div>
+                <div className="rounded-lg border p-3">
+                  <div className="text-xs text-muted-foreground">Statut</div>
+                  <div className="font-medium mt-1 capitalize">{selectedSub.status === "active" ? "Actif" : selectedSub.status === "trial" ? "Essai gratuit" : "Impayé"}</div>
+                </div>
+                <div className="rounded-lg border p-3">
+                  <div className="text-xs text-muted-foreground">Date de début</div>
+                  <div className="font-medium mt-1">{new Date(selectedSub.started).toLocaleDateString("fr-FR")}</div>
+                </div>
+                <div className="rounded-lg border p-3">
+                  <div className="text-xs text-muted-foreground">Prochaine facturation</div>
+                  <div className="font-medium mt-1">{new Date(selectedSub.next_billing).toLocaleDateString("fr-FR")}</div>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1">Envoyer un rappel</Button>
+                <Button className="flex-1 gradient-bg text-white font-semibold">Modifier le forfait</Button>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
