@@ -616,13 +616,45 @@
 
     /* PRINT STYLES */
     @media print {
-      body { margin: 0; }
+      body { margin: 0; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
       .page { page-break-after: always; margin: 0; box-shadow: none; }
+      .cover, .contact-page { background: #1a2744 !important; -webkit-print-color-adjust: exact !important; }
+      .cover::before, .cover::after { display: none; }
+      .highlight-box { background: #1a2744 !important; }
+      .module-card .icon-wrapper { background: #1a2744 !important; }
+      .module-card.gold .icon-wrapper { background: #c8a45c !important; }
+      .advantage-number { background: #c8a45c !important; }
+      .cover-logo { background: #c8a45c !important; }
+      .cover-badge { background: rgba(255,255,255,0.1) !important; }
+      .cover-stats .value { color: #c8a45c !important; }
+      .page-header-logo .icon { background: #1a2744 !important; }
+      .pricing-card.featured { border-color: #c8a45c !important; }
+      .guarantee-box { border-color: #c8a45c !important; }
+      .contact-card { background: rgba(255,255,255,0.08) !important; }
+      .cta-button { background: #c8a45c !important; }
+      .process-step::before { background: #c8a45c !important; }
+      .process-steps::before { background: linear-gradient(to bottom, #c8a45c, #1a2744) !important; }
     }
 
     @media screen {
       body { background: #e2e8f0; padding: 20px 0; }
       .page { box-shadow: 0 4px 40px rgba(0,0,0,0.1); margin-bottom: 30px; border-radius: 4px; }
+      .print-tip {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        background: #1a2744;
+        color: #fff;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-size: 13px;
+        z-index: 9999;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        max-width: 320px;
+        line-height: 1.5;
+      }
+      .print-tip strong { color: #c8a45c; }
+      .print-tip .close { position: absolute; top: 8px; right: 12px; cursor: pointer; color: #999; font-size: 16px; }
     }
   </style>
 </head>
@@ -1024,5 +1056,10 @@
   </div>
 </div>
 
+<div class="print-tip" id="printTip">
+  <span class="close" onclick="document.getElementById('printTip').remove()">&times;</span>
+  Pour exporter en PDF avec les couleurs :<br>
+  <strong>Ctrl+P</strong> → Plus de paramètres → cocher <strong>"Graphiques d'arrière-plan"</strong>
+</div>
 </body>
 </html>
