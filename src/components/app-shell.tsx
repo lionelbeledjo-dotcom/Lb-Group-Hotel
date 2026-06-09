@@ -9,6 +9,7 @@ import {
   LayoutDashboard, CalendarDays, BedDouble, Brush, Wrench, MessageSquare,
   Headset, Users, Receipt, BarChart3, Settings, LogOut, Bell, Search, Inbox, CreditCard,
   Calendar, ScrollText, Wallet, Package, SearchCheck, ClipboardCheck, FileText, User,
+  Building2, UserCheck, Mail, Shield, TrendingUp,
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -21,7 +22,29 @@ import { EstablishmentSwitcher } from "@/components/establishment-switcher";
 type NavItem = { to: string; label: string; icon: any; roles?: string[] };
 type NavGroup = { label: string; items: NavItem[] };
 
-const allGroups: NavGroup[] = [
+const superAdminGroups: NavGroup[] = [
+  { label: "Plateforme", items: [
+    { to: "/dashboard", label: "Vue globale", icon: LayoutDashboard, roles: ["super_admin"] },
+    { to: "/admin/clients", label: "Hôtels clients", icon: Building2, roles: ["super_admin"] },
+    { to: "/admin/demos", label: "Demandes de démo", icon: Mail, roles: ["super_admin"] },
+    { to: "/admin/users", label: "Utilisateurs", icon: UserCheck, roles: ["super_admin"] },
+  ]},
+  { label: "Business", items: [
+    { to: "/subscriptions", label: "Abonnements", icon: CreditCard, roles: ["super_admin"] },
+    { to: "/admin/revenue", label: "Revenus & MRR", icon: TrendingUp, roles: ["super_admin"] },
+    { to: "/finance", label: "Factures", icon: Receipt, roles: ["super_admin"] },
+    { to: "/analytics", label: "Analytics", icon: BarChart3, roles: ["super_admin"] },
+  ]},
+  { label: "Support", items: [
+    { to: "/inbox", label: "Messages contacts", icon: Inbox, roles: ["super_admin"] },
+    { to: "/communication", label: "Annonces", icon: Bell, roles: ["super_admin"] },
+  ]},
+  { label: "Configuration", items: [
+    { to: "/settings", label: "Paramètres", icon: Settings, roles: ["super_admin"] },
+  ]},
+];
+
+const clientGroups: NavGroup[] = [
   { label: "Vue d'ensemble", items: [
     { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { to: "/agenda", label: "Agenda", icon: Calendar },
@@ -29,26 +52,26 @@ const allGroups: NavGroup[] = [
   ]},
   { label: "Opérations", items: [
     { to: "/consignes", label: "Consignes", icon: ScrollText },
-    { to: "/reservations", label: "Réservations", icon: CalendarDays, roles: ["super_admin", "admin", "receptionist"] },
-    { to: "/rooms", label: "État des chambres", icon: BedDouble, roles: ["super_admin", "admin", "receptionist"] },
-    { to: "/housekeeping", label: "Checklists", icon: Brush, roles: ["super_admin", "admin", "housekeeper"] },
-    { to: "/cash-register", label: "Fonds de caisse", icon: Wallet, roles: ["super_admin", "admin", "receptionist"] },
-    { to: "/lost-found", label: "Objets trouvés", icon: SearchCheck, roles: ["super_admin", "admin", "receptionist", "housekeeper"] },
-    { to: "/lent-items", label: "Objets prêtés", icon: Package, roles: ["super_admin", "admin", "receptionist"] },
-    { to: "/maintenance", label: "Problèmes techniques", icon: Wrench, roles: ["super_admin", "admin", "maintenance"] },
-    { to: "/requests", label: "Conciergerie", icon: MessageSquare, roles: ["super_admin", "admin", "receptionist"] },
+    { to: "/reservations", label: "Réservations", icon: CalendarDays, roles: ["admin", "receptionist"] },
+    { to: "/rooms", label: "État des chambres", icon: BedDouble, roles: ["admin", "receptionist"] },
+    { to: "/housekeeping", label: "Checklists", icon: Brush, roles: ["admin", "housekeeper"] },
+    { to: "/cash-register", label: "Fonds de caisse", icon: Wallet, roles: ["admin", "receptionist"] },
+    { to: "/lost-found", label: "Objets trouvés", icon: SearchCheck, roles: ["admin", "receptionist", "housekeeper"] },
+    { to: "/lent-items", label: "Objets prêtés", icon: Package, roles: ["admin", "receptionist"] },
+    { to: "/maintenance", label: "Problèmes techniques", icon: Wrench, roles: ["admin", "maintenance"] },
+    { to: "/requests", label: "Conciergerie", icon: MessageSquare, roles: ["admin", "receptionist"] },
   ]},
   { label: "Réception", items: [
-    { to: "/reception", label: "Check-in / out", icon: Headset, roles: ["super_admin", "admin", "receptionist"] },
+    { to: "/reception", label: "Check-in / out", icon: Headset, roles: ["admin", "receptionist"] },
   ]},
   { label: "Management", items: [
-    { to: "/quality", label: "Contrôles qualités", icon: ClipboardCheck, roles: ["super_admin", "admin"] },
-    { to: "/contracts", label: "Mes contrats", icon: FileText, roles: ["super_admin", "admin"] },
-    { to: "/finance", label: "Mes factures", icon: Receipt, roles: ["super_admin", "admin"] },
-    { to: "/analytics", label: "Mes chiffres", icon: BarChart3, roles: ["super_admin", "admin"] },
-    { to: "/subscriptions", label: "Abonnements", icon: CreditCard, roles: ["super_admin"] },
-    { to: "/inbox", label: "Boîte de réception", icon: Inbox, roles: ["super_admin", "admin"] },
-    { to: "/settings", label: "Paramètres", icon: Settings, roles: ["super_admin", "admin"] },
+    { to: "/quality", label: "Contrôles qualités", icon: ClipboardCheck, roles: ["admin"] },
+    { to: "/contracts", label: "Mes contrats", icon: FileText, roles: ["admin"] },
+    { to: "/finance", label: "Mes factures", icon: Receipt, roles: ["admin"] },
+    { to: "/analytics", label: "Mes chiffres", icon: BarChart3, roles: ["admin"] },
+    { to: "/subscriptions", label: "Abonnement", icon: CreditCard, roles: ["admin"] },
+    { to: "/inbox", label: "Boîte de réception", icon: Inbox, roles: ["admin"] },
+    { to: "/settings", label: "Paramètres", icon: Settings, roles: ["admin"] },
   ]},
 ];
 
@@ -69,9 +92,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     // context not available yet
   }
 
+  const isSuperAdmin = userRoles.includes("super_admin");
+
   const filteredGroups = useMemo(() => {
-    if (userRoles.length === 0) return allGroups;
-    return allGroups
+    const baseGroups = isSuperAdmin ? superAdminGroups : clientGroups;
+    if (userRoles.length === 0) return clientGroups;
+    return baseGroups
       .map((g) => ({
         ...g,
         items: g.items.filter((item) => {
@@ -80,7 +106,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         }),
       }))
       .filter((g) => g.items.length > 0);
-  }, [userRoles]);
+  }, [userRoles, isSuperAdmin]);
 
   async function handleSignOut() {
     await signOut();
